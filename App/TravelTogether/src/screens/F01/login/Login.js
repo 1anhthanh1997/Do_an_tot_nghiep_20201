@@ -6,9 +6,15 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import axios from 'axios';
+import {getApi, postApi} from '../../../api';
 import loginStyles from './LoginStyles';
+import {ASYNC_STORAGE, IMG} from '../../../constants';
+
+const loginUrl = '/users/login';
 
 const Login = ({navigation}) => {
   const [username, setUserName] = useState(null);
@@ -28,10 +34,7 @@ const Login = ({navigation}) => {
 
   const validate = () => {
     let pass = /^[A-Za-z]\w{7,14}$/;
-    if (password.length < 8 || !password.match(pass)) {
-      return false;
-    }
-    return true;
+    return !(password.length < 8 || !password.match(pass));
   };
   const login = async () => {
     try {
@@ -39,19 +42,10 @@ const Login = ({navigation}) => {
         username: username,
         password: password,
       };
-      let response = await fetch(
-        'https://open-drone-map.herokuapp.com/users/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-      if (response.status === 200) {
-        let responseJson = await response.json();
+      let response = await postApi(loginUrl, data);
+      if (response.status === 200 || response.status === 201) {
+        // let responseJson = await response.json();
+        console.log(response);
         navigation.replace('Home');
       } else {
         Alert.alert('Tài khoản hoặc mật khẩu không đúng');
@@ -83,36 +77,35 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <View style={loginStyles.screenView}>
-      <Image
-        source={require('../../../assets/logo.png')}
-        style={loginStyles.logo}
-      />
-      <TextInput
-        style={loginStyles.usernameInput}
-        value={username}
-        onChangeText={(val) => setUserName(val)}
-        placeholder={'Tên đăng nhập'}
-      />
-      <TextInput
-        style={loginStyles.passwordInput}
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        placeholder={'Mật khẩu'}
-      />
-      {renderLoginButton()}
-      <View style={loginStyles.registerAndResetPassView}>
-        <TouchableOpacity
-          style={loginStyles.registerView}
-          onPress={onPressRegister}>
-          <Text style={loginStyles.registerText}>Tạo tài khoản</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={loginStyles.resetPassView}>
-          <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={loginStyles.screenView}>
+        <Image source={IMG.logoApp} style={loginStyles.logo} />
+        <TextInput
+          style={loginStyles.usernameInput}
+          value={username}
+          onChangeText={(val) => setUserName(val)}
+          placeholder={'Tên đăng nhập'}
+        />
+        <TextInput
+          style={loginStyles.passwordInput}
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(val) => setPassword(val)}
+          placeholder={'Mật khẩu'}
+        />
+        {renderLoginButton()}
+        <View style={loginStyles.registerAndResetPassView}>
+          <TouchableOpacity
+            style={loginStyles.registerView}
+            onPress={onPressRegister}>
+            <Text style={loginStyles.registerText}>Tạo tài khoản</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={loginStyles.resetPassView}>
+            <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 export default Login;

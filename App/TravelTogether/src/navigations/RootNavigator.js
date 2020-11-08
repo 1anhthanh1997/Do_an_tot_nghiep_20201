@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-// import {Login, Register} from '../screens/index';
-import Login from '../screens/F01/login/Login';
-import Register from '../screens/F01/register/Register';
-import Home from '../screens/F02/home/Home';
+import {
+  NAVIGATE_TO_LOGIN_SCREEN,
+  NAVIGATE_TO_REGISTER_SCREEN,
+  NAVIGATE_TO_HOME_SCREEN,
+} from './routers';
+import {Login, Register, Home} from '../screens';
 
 const Stack = createStackNavigator();
 
@@ -16,9 +18,13 @@ const RootNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={loginOption} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen
+          name={NAVIGATE_TO_LOGIN_SCREEN}
+          component={Login}
+          options={loginOption}
+        />
+        <Stack.Screen name={NAVIGATE_TO_REGISTER_SCREEN} component={Register} />
+        <Stack.Screen name={NAVIGATE_TO_HOME_SCREEN} component={Home} />
       </Stack.Navigator>
     </NavigationContainer>
   );

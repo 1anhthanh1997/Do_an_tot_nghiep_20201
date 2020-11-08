@@ -1,7 +1,5 @@
 import Login from './F01/login/Login';
 import Register from './F01/register/Register';
+import Home from './F02/home/Home';
 
-export default {
-  Login,
-  Register,
-};
+export {Login, Register, Home};
