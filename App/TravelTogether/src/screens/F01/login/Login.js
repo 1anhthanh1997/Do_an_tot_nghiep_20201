@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  Switch,
 } from 'react-native';
 import axios from 'axios';
 import {getApi, postApi} from '../../../api';
@@ -19,6 +20,7 @@ const loginUrl = '/users/login';
 const Login = ({navigation}) => {
   const [username, setUserName] = useState(null);
   const [password, setPassword] = useState(null);
+  const [isSwitchEnable, setIsSwitchEnable] = useState(false);
 
   const onPressRegister = () => {
     navigation.navigate('Register');
@@ -44,7 +46,6 @@ const Login = ({navigation}) => {
       };
       let response = await postApi(loginUrl, data);
       if (response.status === 200 || response.status === 201) {
-        // let responseJson = await response.json();
         console.log(response);
         navigation.replace('Home');
       } else {
@@ -53,6 +54,49 @@ const Login = ({navigation}) => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const toggleSwitch = () => {
+    setIsSwitchEnable(!isSwitchEnable);
+  };
+
+  const renderLogo = () => {
+    return <Image source={IMG.logoApp} style={loginStyles.logo} />;
+  };
+
+  const renderTextInput = () => {
+    return (
+      <View style={loginStyles.tempView}>
+        <TextInput
+          style={loginStyles.usernameInput}
+          value={username}
+          onChangeText={(val) => setUserName(val)}
+          placeholder={'Tên đăng nhập'}
+        />
+        <TextInput
+          style={loginStyles.passwordInput}
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(val) => setPassword(val)}
+          placeholder={'Mật khẩu'}
+        />
+      </View>
+    );
+  };
+
+  const renderSwitch = () => {
+    return (
+      <View style={loginStyles.switchView}>
+        <Switch
+          trackColor={{false: 'gray', true: 'red'}}
+          thumbColor={isSwitchEnable ? 'white' : 'white'}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isSwitchEnable}
+          style={loginStyles.switch}
+        />
+      </View>
+    );
   };
 
   const renderLoginButton = () => {
@@ -76,34 +120,38 @@ const Login = ({navigation}) => {
     }
   };
 
+  const renderRegisterAndResetPass = () => {
+    return (
+      <View style={loginStyles.registerAndResetPassView}>
+        <TouchableOpacity
+          style={loginStyles.registerView}
+          onPress={onPressRegister}>
+          <Text style={loginStyles.registerText}>Tạo tài khoản</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={loginStyles.resetPassView}>
+          <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderResetPass = () => {
+    return (
+      <TouchableOpacity style={loginStyles.resetPassView}>
+        <Text>Quên mật khẩu?</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={loginStyles.screenView}>
-        <Image source={IMG.logoApp} style={loginStyles.logo} />
-        <TextInput
-          style={loginStyles.usernameInput}
-          value={username}
-          onChangeText={(val) => setUserName(val)}
-          placeholder={'Tên đăng nhập'}
-        />
-        <TextInput
-          style={loginStyles.passwordInput}
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(val) => setPassword(val)}
-          placeholder={'Mật khẩu'}
-        />
+        {renderLogo()}
+        {renderTextInput()}
+        {renderSwitch()}
         {renderLoginButton()}
-        <View style={loginStyles.registerAndResetPassView}>
-          <TouchableOpacity
-            style={loginStyles.registerView}
-            onPress={onPressRegister}>
-            <Text style={loginStyles.registerText}>Tạo tài khoản</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={loginStyles.resetPassView}>
-            <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
-          </TouchableOpacity>
-        </View>
+        {renderResetPass()}
+        {/*{renderRegisterAndResetPass()}*/}
       </View>
     </TouchableWithoutFeedback>
   );

@@ -17,7 +17,7 @@ const loginOption = {
 const RootNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={NAVIGATE_TO_LOGIN_SCREEN}>
         <Stack.Screen
           name={NAVIGATE_TO_LOGIN_SCREEN}
           component={Login}

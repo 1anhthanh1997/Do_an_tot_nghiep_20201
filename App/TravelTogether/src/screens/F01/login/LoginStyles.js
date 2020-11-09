@@ -7,6 +7,10 @@ const loginStyles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
   },
+  tempView: {
+    width: '100%',
+    alignItems: 'center',
+  },
   logo: {
     width: 70,
     height: 70,
@@ -27,6 +31,15 @@ const loginStyles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'gray',
+  },
+  switchView: {
+    width: '100%',
+    alignItems: 'flex-end',
+    paddingRight: 10,
+    marginTop: 10,
+  },
+  switch: {
+    transform: [{scaleX: 1.2}, {scaleY: 1.2}],
   },
   loginButton: {
     width: '100%',
@@ -56,9 +69,9 @@ const loginStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   resetPassView: {
-    width: '50%',
+    width: '100%',
     alignItems: 'center',
-    padding: 5,
+    paddingTop: 15,
   },
   resetPassText: {
     fontSize: 14,
