@@ -5,8 +5,9 @@ import {
   NAVIGATE_TO_LOGIN_SCREEN,
   NAVIGATE_TO_REGISTER_SCREEN,
   NAVIGATE_TO_HOME_SCREEN,
+  NAVIGATE_TO_FORGOT_PASSWORD,
 } from './routers';
-import {Login, Register, Home} from '../screens';
+import {Login, Register, Home, ForgotPassword} from '../screens';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,10 @@ const RootNavigator = () => {
           options={loginOption}
         />
         <Stack.Screen name={NAVIGATE_TO_REGISTER_SCREEN} component={Register} />
+        <Stack.Screen
+          name={NAVIGATE_TO_FORGOT_PASSWORD}
+          component={ForgotPassword}
+        />
         <Stack.Screen name={NAVIGATE_TO_HOME_SCREEN} component={Home} />
       </Stack.Navigator>
     </NavigationContainer>

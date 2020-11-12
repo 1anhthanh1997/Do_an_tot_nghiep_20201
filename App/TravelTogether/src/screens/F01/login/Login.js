@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,17 @@ import {
   Keyboard,
   Switch,
 } from 'react-native';
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {getApi, postApi} from '../../../api';
 import loginStyles from './LoginStyles';
 import {ASYNC_STORAGE, IMG} from '../../../constants';
+import {
+  NAVIGATE_TO_FORGOT_PASSWORD,
+  NAVIGATE_TO_REGISTER_SCREEN,
+  NAVIGATE_TO_HOME_SCREEN,
+} from '../../../navigations/routers';
+import LoadingView from '../../../commons/LoadingView';
 
 const loginUrl = '/users/login';
 
@@ -21,13 +28,40 @@ const Login = ({navigation}) => {
   const [username, setUserName] = useState(null);
   const [password, setPassword] = useState(null);
   const [isSwitchEnable, setIsSwitchEnable] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const switchStatusData = await AsyncStorage.getItem(
+          ASYNC_STORAGE.SWITCH_STATUS,
+        );
+        setIsSwitchEnable(switchStatusData === 'true');
+        if (switchStatusData && switchStatusData === 'true') {
+          const usernameData = await AsyncStorage.getItem(
+            ASYNC_STORAGE.USERNAME,
+          );
+          console.log(usernameData);
+          setUserName(usernameData);
+        }
+      } catch (e) {
+        // error reading value
+      }
+    };
+    getUserName().then();
+  }, []);
 
   const onPressRegister = () => {
-    navigation.navigate('Register');
+    navigateToScreen(NAVIGATE_TO_REGISTER_SCREEN);
+  };
+
+  const onPressResetPassword = () => {
+    navigateToScreen(NAVIGATE_TO_FORGOT_PASSWORD);
   };
 
   const onPressLogin = () => {
     if (validate()) {
+      setIsLoading(true);
       login();
     } else {
       Alert.alert('Tài khoản hoặc mật khẩu không đúng định dạng.');
@@ -38,6 +72,7 @@ const Login = ({navigation}) => {
     let pass = /^[A-Za-z]\w{7,14}$/;
     return !(password.length < 8 || !password.match(pass));
   };
+
   const login = async () => {
     try {
       let data = {
@@ -45,19 +80,35 @@ const Login = ({navigation}) => {
         password: password,
       };
       let response = await postApi(loginUrl, data);
-      if (response.status === 200 || response.status === 201) {
-        console.log(response);
-        navigation.replace('Home');
-      } else {
-        Alert.alert('Tài khoản hoặc mật khẩu không đúng');
+      if (response) {
+        setIsLoading(false);
+        if (response.status === 200 || response.status === 201) {
+          await AsyncStorage.setItem(
+            ASYNC_STORAGE.SWITCH_STATUS,
+            isSwitchEnable.toString(),
+          );
+          if (isSwitchEnable) {
+            await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
+          }
+          replaceToScreen(NAVIGATE_TO_HOME_SCREEN);
+        }
       }
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      Alert.alert('Tài khoản hoặc mật khẩu không chính xác');
     }
   };
 
   const toggleSwitch = () => {
     setIsSwitchEnable(!isSwitchEnable);
+  };
+
+  const navigateToScreen = (screenName) => {
+    navigation.navigate(screenName);
+  };
+
+  const replaceToScreen = (screenName) => {
+    navigation.replace(screenName);
   };
 
   const renderLogo = () => {
@@ -95,6 +146,7 @@ const Login = ({navigation}) => {
           value={isSwitchEnable}
           style={loginStyles.switch}
         />
+        <Text style={loginStyles.saveAccountText}>Lưu tài khoản</Text>
       </View>
     );
   };
@@ -120,38 +172,41 @@ const Login = ({navigation}) => {
     }
   };
 
-  const renderRegisterAndResetPass = () => {
+  const renderResetPass = () => {
     return (
-      <View style={loginStyles.registerAndResetPassView}>
-        <TouchableOpacity
-          style={loginStyles.registerView}
-          onPress={onPressRegister}>
-          <Text style={loginStyles.registerText}>Tạo tài khoản</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={loginStyles.resetPassView}>
-          <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        hitSlop={loginStyles.touchableHitSlop}
+        style={loginStyles.resetPassView}
+        onPress={onPressResetPassword}>
+        <Text style={loginStyles.resetPassText}>Quên mật khẩu?</Text>
+      </TouchableOpacity>
     );
   };
 
-  const renderResetPass = () => {
+  const renderRegister = () => {
     return (
-      <TouchableOpacity style={loginStyles.resetPassView}>
-        <Text>Quên mật khẩu?</Text>
-      </TouchableOpacity>
+      <View style={loginStyles.registerView}>
+        <Text style={loginStyles.registerExplain}>Chưa có tài khoản? </Text>
+        <TouchableOpacity
+          hitSlop={loginStyles.touchableHitSlop}
+          style={loginStyles.registerTouchable}
+          onPress={onPressRegister}>
+          <Text style={loginStyles.registerText}>Đăng ký</Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={loginStyles.screenView}>
+        <LoadingView visible={isLoading} />
         {renderLogo()}
         {renderTextInput()}
         {renderSwitch()}
         {renderLoginButton()}
         {renderResetPass()}
-        {/*{renderRegisterAndResetPass()}*/}
+        {renderRegister()}
       </View>
     </TouchableWithoutFeedback>
   );
