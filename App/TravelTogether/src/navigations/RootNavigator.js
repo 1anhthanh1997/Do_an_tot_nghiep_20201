@@ -15,6 +15,10 @@ const loginOption = {
   headerShown: false,
 };
 
+const registerOption = {
+  headerShown: true,
+};
+
 const RootNavigator = () => {
   return (
     <NavigationContainer>
@@ -24,7 +28,11 @@ const RootNavigator = () => {
           component={Login}
           options={loginOption}
         />
-        <Stack.Screen name={NAVIGATE_TO_REGISTER_SCREEN} component={Register} />
+        <Stack.Screen
+          name={NAVIGATE_TO_REGISTER_SCREEN}
+          component={Register}
+          options={registerOption}
+        />
         <Stack.Screen
           name={NAVIGATE_TO_FORGOT_PASSWORD}
           component={ForgotPassword}
