@@ -18,6 +18,7 @@ import {
   NAVIGATE_TO_FORGOT_PASSWORD,
   NAVIGATE_TO_REGISTER_SCREEN,
   NAVIGATE_TO_HOME_SCREEN,
+  NAVIGATE_TO_TAB_SCREEN,
 } from '../../../navigations/routers';
 import LoadingView from '../../../commons/loadingView/LoadingView';
 import {Dialog} from '../../../commons';
@@ -93,7 +94,7 @@ const Login = ({navigation}) => {
           if (isSwitchEnable) {
             await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
           }
-          replaceToScreen(NAVIGATE_TO_HOME_SCREEN);
+          replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
         }
       }
     } catch (e) {
