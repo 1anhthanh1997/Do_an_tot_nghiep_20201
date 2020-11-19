@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
   TouchableWithoutFeedback,
   Keyboard,
   Switch,
@@ -20,7 +19,8 @@ import {
   NAVIGATE_TO_REGISTER_SCREEN,
   NAVIGATE_TO_HOME_SCREEN,
 } from '../../../navigations/routers';
-import LoadingView from '../../../commons/LoadingView';
+import LoadingView from '../../../commons/loadingView/LoadingView';
+import {Dialog} from '../../../commons';
 
 const loginUrl = '/users/login';
 
@@ -29,6 +29,8 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState(null);
   const [isSwitchEnable, setIsSwitchEnable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisplayErrorDialog, setIsDisplayErrorDialog] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const getUserName = async () => {
@@ -64,7 +66,8 @@ const Login = ({navigation}) => {
       setIsLoading(true);
       login();
     } else {
-      Alert.alert('Tài khoản hoặc mật khẩu không đúng định dạng.');
+      setMessage('Tài khoản hoặc mật khẩu không đúng định dạng.');
+      setIsDisplayErrorDialog(true);
     }
   };
 
@@ -95,7 +98,8 @@ const Login = ({navigation}) => {
       }
     } catch (e) {
       setIsLoading(false);
-      Alert.alert('Tài khoản hoặc mật khẩu không chính xác');
+      setMessage('Tài khoản hoặc mật khẩu không chính xác');
+      setIsDisplayErrorDialog(true);
     }
   };
 
@@ -197,6 +201,24 @@ const Login = ({navigation}) => {
     );
   };
 
+  const renderDialog = () => {
+    return (
+      <View>
+        <Dialog
+          visible={isDisplayErrorDialog}
+          isDisplayPositiveButton={true}
+          positiveButtonText={'Đóng'}
+          onPressPositiveButton={() => setIsDisplayErrorDialog(false)}
+          renderContent={
+            <View style={loginStyles.dialog}>
+              <Text style={loginStyles.textContent}>{message}</Text>
+            </View>
+          }
+        />
+      </View>
+    );
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={loginStyles.screenView}>
@@ -207,6 +229,7 @@ const Login = ({navigation}) => {
         {renderLoginButton()}
         {renderResetPass()}
         {renderRegister()}
+        {renderDialog()}
       </View>
     </TouchableWithoutFeedback>
   );

@@ -16,7 +16,7 @@ const loginOption = {
 };
 
 const registerOption = {
-  headerShown: true,
+  headerTitle:'Đăng ký'
 };
 
 const RootNavigator = () => {

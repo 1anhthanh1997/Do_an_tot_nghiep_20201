@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const baseUrl = 'https://open-drone-map.herokuapp.com';
+const localUrl = 'http://192.168.55.108:3000';
 
 const getApi = async (lastUrl) => {
   const response = await axios({
@@ -17,11 +18,11 @@ const getApi = async (lastUrl) => {
 const postApi = async (lastUrl, data) => {
   const response = await axios({
     method: 'post',
-    url: baseUrl + lastUrl,
+    url: localUrl + lastUrl,
     data: data,
   });
-  const responseData = response.data;
-  console.log(responseData);
+  // const responseData = response.data;
+  console.log(response);
   return response;
 };
 

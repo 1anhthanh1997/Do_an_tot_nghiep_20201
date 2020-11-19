@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Modal, ActivityIndicator, StyleSheet, View} from 'react-native';
-import {COLOR} from '../constants';
+import {COLOR} from '../../constants';
 import PropTypes from 'prop-types';
 
 const LoadingView = ({visible}) => {

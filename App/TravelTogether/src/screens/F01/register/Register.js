@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import registerStyles from './RegisterStyles';
 import {COLOR} from '../../../constants';
@@ -17,6 +18,10 @@ import {
   validateNormalForm,
 } from '../../../utils';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {postApi} from '../../../api';
+import LoadingView from '../../../commons/loadingView/LoadingView';
+import {Dialog} from '../../../commons';
+import {NAVIGATE_TO_LOGIN_SCREEN} from '../../../navigations/routers';
 
 const inputData = [
   {
@@ -39,7 +44,7 @@ const inputData = [
   },
 ];
 
-const Register = () => {
+const Register = ({navigation}) => {
   const [infoForm, setInfoForm] = useState([
     null,
     null,
@@ -50,14 +55,79 @@ const Register = () => {
   ]);
   const [error, setError] = useState([null, null, null, null, null, null]);
   const [isError, setIsError] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDisplayDialog, setIsDisplayDialog] = useState(false);
+  const [isDisplayErrorDialog, setIsDisplayErrorDialog] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    console.log(infoForm);
+  }, [infoForm]);
 
   const setInputValue = (value, index) => {
+    console.log(value);
     let tmpArr = [...infoForm];
     tmpArr[index] = value;
     setInfoForm(tmpArr);
+    console.log('ok');
   };
 
-  const onPressRegister = () => {
+  const navigateToScreen = (screenName) => {
+    navigation.navigate(screenName);
+  };
+
+  const replaceToScreen = (screenName) => {
+    navigation.replace(screenName);
+  };
+
+  const onPressRegister = async () => {
+    await validateRegisterForm();
+    // console.log(checkHasError());
+    if (!checkHasError()) {
+      let formData = {
+        username: infoForm[0],
+        password: infoForm[1],
+        name: infoForm[3],
+        email: infoForm[4],
+        phoneNumber: infoForm[5],
+      };
+      setIsLoading(true);
+      await register(formData);
+    }
+  };
+
+  const register = async (formData) => {
+    try {
+      const response = await postApi('/users', formData);
+      setIsLoading(false);
+      console.log(response);
+      if (response.status === 201) {
+        setMessage('Đăng ký tài khoản thành công');
+        setIsDisplayDialog(true);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      if (e.response.status === 409) {
+        const tmpError = [...error];
+        tmpError[0] = 'Tên người dùng đã tồn tại';
+        setError(tmpError);
+      } else {
+        setMessage('Đã xảy ra lỗi');
+        setIsDisplayErrorDialog(true);
+      }
+    }
+  };
+
+  const checkHasError = () => {
+    error.map((item) => {
+      if (item) {
+        return true;
+      }
+    });
+    return false;
+  };
+
+  const validateRegisterForm = () => {
     let tmpArr = [...error];
     if (!validateUserName(infoForm[0])) {
       tmpArr[0] = 'Tên đăng nhập là trường bắt buộc và phải có ít nhất 8 ký tự';
@@ -106,6 +176,7 @@ const Register = () => {
     }
     return (
       <TextInput
+        caretHidden={index === 4}
         style={registerStyles.input}
         value={infoForm[index]}
         keyboardType={index === 5 ? 'numeric' : 'default'}
@@ -152,15 +223,46 @@ const Register = () => {
       </TouchableOpacity>
     );
   };
+
+  const renderDialog = () => {
+    return (
+      <View>
+        <Dialog
+          visible={isDisplayDialog}
+          isDisplayPositiveButton={true}
+          positiveButtonText={'Đóng'}
+          onPressPositiveButton={() => {
+            setIsDisplayDialog(!isDisplayDialog);
+            replaceToScreen(NAVIGATE_TO_LOGIN_SCREEN);
+          }}
+          renderContent={
+            <View style={registerStyles.dialog}>
+              <Text style={registerStyles.textContent}>{message}</Text>
+            </View>
+          }
+        />
+        <Dialog
+          visible={isDisplayErrorDialog}
+          isDisplayPositiveButton={true}
+          positiveButtonText={'Đóng'}
+          onPressPositiveButton={() => setIsDisplayErrorDialog(false)}
+          renderContent={<Text>{message}</Text>}
+        />
+      </View>
+    );
+  };
+
   return (
     <KeyboardAvoidingView
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <LoadingView visible={isLoading} />
       <View style={registerStyles.screenView}>
         <ScrollView style={registerStyles.containerView}>
           {renderInput()}
         </ScrollView>
         {renderButton()}
+        {renderDialog()}
       </View>
     </KeyboardAvoidingView>
   );

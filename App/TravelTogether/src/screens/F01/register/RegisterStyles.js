@@ -56,6 +56,15 @@ const registerStyles = StyleSheet.create({
     bottom: 10,
     left: 10,
   },
+  dialog: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  textContent: {
+    color: COLOR.black,
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });
 
 export default registerStyles;
