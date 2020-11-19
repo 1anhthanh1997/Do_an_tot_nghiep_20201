@@ -1,2 +1,3 @@
 import logoApp from '../assets/logo.png';
-export {logoApp};
+import defaultAvatar from '../assets/defaultAvatar.jpg';
+export {logoApp, defaultAvatar};

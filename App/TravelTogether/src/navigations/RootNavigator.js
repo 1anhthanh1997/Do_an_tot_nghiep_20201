@@ -9,6 +9,9 @@ import {
   NAVIGATE_TO_HOME_SCREEN,
   NAVIGATE_TO_FORGOT_PASSWORD,
   NAVIGATE_TO_TAB_SCREEN,
+  NAVIGATE_TO_TRIP_SCREEN,
+  NAVIGATE_TO_NOTIFICATION_SCREEN,
+  NAVIGATE_TO_PERSONAL_SCREEN,
 } from './routers';
 import {
   Login,
@@ -64,15 +67,23 @@ const tabPersonalOption = {
 const BottomTabNavigation = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home} options={tabHomeOption} />
-      <Tab.Screen name="Trip" component={Trip} options={tabTripOption} />
       <Tab.Screen
-        name="Notification"
+        name={NAVIGATE_TO_HOME_SCREEN}
+        component={Home}
+        options={tabHomeOption}
+      />
+      <Tab.Screen
+        name={NAVIGATE_TO_TRIP_SCREEN}
+        component={Trip}
+        options={tabTripOption}
+      />
+      <Tab.Screen
+        name={NAVIGATE_TO_NOTIFICATION_SCREEN}
         component={Notification}
         options={tabNotificationOption}
       />
       <Tab.Screen
-        name="Personal"
+        name={NAVIGATE_TO_PERSONAL_SCREEN}
         component={Personal}
         options={tabPersonalOption}
       />
