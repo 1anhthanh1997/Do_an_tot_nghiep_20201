@@ -12,6 +12,8 @@ import {
   NAVIGATE_TO_TRIP_SCREEN,
   NAVIGATE_TO_NOTIFICATION_SCREEN,
   NAVIGATE_TO_PERSONAL_SCREEN,
+  NAVIGATE_TO_PERSONAL_INFORMATION_SCREEN,
+  NAVIGATE_TO_CHANGE_PASSWORD,
 } from './routers';
 import {
   Login,
@@ -21,6 +23,8 @@ import {
   Notification,
   Trip,
   Personal,
+  PersonalInformation,
+  ChangePassword,
 } from '../screens';
 
 const Stack = createStackNavigator();
@@ -112,6 +116,16 @@ const RootNavigator = () => {
         <Stack.Screen
           name={NAVIGATE_TO_TAB_SCREEN}
           component={BottomTabNavigation}
+          options={bottomTabOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_PERSONAL_INFORMATION_SCREEN}
+          component={PersonalInformation}
+          options={bottomTabOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_CHANGE_PASSWORD}
+          component={ChangePassword}
           options={bottomTabOption}
         />
       </Stack.Navigator>

@@ -18,7 +18,8 @@ const personalStyles = StyleSheet.create({
   headView: {
     width: '100%',
     height: '25%',
-    backgroundColor: COLOR.moss,
+    backgroundColor: COLOR.green,
+    opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
   },
