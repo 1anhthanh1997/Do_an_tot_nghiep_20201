@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import registerStyles from './RegisterStyles';
-import {COLOR} from '../../../constants';
+import {COLOR, STATUS} from '../../../constants';
 import {
   validateUserName,
   validatePassword,
@@ -22,6 +22,8 @@ import {postApi} from '../../../api';
 import LoadingView from '../../../commons/loadingView/LoadingView';
 import {Dialog} from '../../../commons';
 import {NAVIGATE_TO_LOGIN_SCREEN} from '../../../navigations/routers';
+import {connect} from 'react-redux';
+import {register} from '../../../store/f01/actions';
 
 const inputData = [
   {
@@ -44,7 +46,7 @@ const inputData = [
   },
 ];
 
-const Register = ({navigation}) => {
+const Register = ({navigation, register: _register, registerData}) => {
   const [infoForm, setInfoForm] = useState([
     null,
     null,
@@ -58,11 +60,25 @@ const Register = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
   const [isDisplayErrorDialog, setIsDisplayErrorDialog] = useState(false);
+  const [errorCode, setErrorCode] = useState('');
   const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     console.log(infoForm);
   }, [infoForm]);
+
+  useEffect(() => {
+    if (registerData.status === STATUS.SUCCESS) {
+      setMessage('Đăng ký tài khoản thành công');
+      setIsDisplayDialog(true);
+    }
+    if (registerData.status === STATUS.ERROR) {
+      setErrorCode(registerData.errorCode);
+      setErrorMessage(registerData.errorMessage);
+      setIsDisplayErrorDialog(true);
+    }
+  }, [registerData]);
 
   const setInputValue = (value, index) => {
     console.log(value);
@@ -92,31 +108,31 @@ const Register = ({navigation}) => {
         phoneNumber: infoForm[5],
       };
       setIsLoading(true);
-      await register(formData);
+      await _register(formData);
     }
   };
 
-  const register = async (formData) => {
-    try {
-      const response = await postApi('/users', formData);
-      setIsLoading(false);
-      console.log(response);
-      if (response.status === 201) {
-        setMessage('Đăng ký tài khoản thành công');
-        setIsDisplayDialog(true);
-      }
-    } catch (e) {
-      setIsLoading(false);
-      if (e.response.status === 409) {
-        const tmpError = [...error];
-        tmpError[0] = 'Tên người dùng đã tồn tại';
-        setError(tmpError);
-      } else {
-        setMessage('Đã xảy ra lỗi');
-        setIsDisplayErrorDialog(true);
-      }
-    }
-  };
+  // const register = async (formData) => {
+  //   try {
+  //     const response = await postApi('/users', formData);
+  //     setIsLoading(false);
+  //     console.log(response);
+  //     if (response.status === 201) {
+  //       setMessage('Đăng ký tài khoản thành công');
+  //       setIsDisplayDialog(true);
+  //     }
+  //   } catch (e) {
+  //     setIsLoading(false);
+  //     if (e.response.status === 409) {
+  //       const tmpError = [...error];
+  //       tmpError[0] = 'Tên người dùng đã tồn tại';
+  //       setError(tmpError);
+  //     } else {
+  //       setMessage('Đã xảy ra lỗi');
+  //       setIsDisplayErrorDialog(true);
+  //     }
+  //   }
+  // };
 
   const checkHasError = () => {
     error.map((item) => {
@@ -232,7 +248,7 @@ const Register = ({navigation}) => {
           isDisplayPositiveButton={true}
           positiveButtonText={'Đóng'}
           onPressPositiveButton={() => {
-            setIsDisplayDialog(!isDisplayDialog);
+            setIsDisplayDialog(false);
             replaceToScreen(NAVIGATE_TO_LOGIN_SCREEN);
           }}
           renderContent={
@@ -246,7 +262,11 @@ const Register = ({navigation}) => {
           isDisplayPositiveButton={true}
           positiveButtonText={'Đóng'}
           onPressPositiveButton={() => setIsDisplayErrorDialog(false)}
-          renderContent={<Text>{message}</Text>}
+          renderContent={
+            <View style={registerStyles.dialog}>
+              <Text style={registerStyles.textContent}>{errorMessage}</Text>
+            </View>
+          }
         />
       </View>
     );
@@ -256,7 +276,7 @@ const Register = ({navigation}) => {
     <KeyboardAvoidingView
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <LoadingView visible={isLoading} />
+      <LoadingView visible={registerData.status === STATUS.LOADING} />
       <View style={registerStyles.screenView}>
         <ScrollView style={registerStyles.containerView}>
           {renderInput()}
@@ -267,4 +287,12 @@ const Register = ({navigation}) => {
     </KeyboardAvoidingView>
   );
 };
-export default Register;
+
+const mapStateToProps = (state) => {
+  const registerData = state.f01Reducer.register;
+  return {
+    registerData,
+  };
+};
+
+export default connect(mapStateToProps, {register})(Register);

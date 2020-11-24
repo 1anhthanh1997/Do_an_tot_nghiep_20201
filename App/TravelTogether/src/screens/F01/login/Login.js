@@ -59,6 +59,7 @@ const Login = ({navigation, login: _login, loginData}) => {
 
   useEffect(() => {
     const onLoginSuccess = async () => {
+      console.log(loginData.loginResultData);
       if (isSwitchEnable) {
         await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
       }
@@ -105,33 +106,6 @@ const Login = ({navigation, login: _login, loginData}) => {
     let pass = /^[A-Za-z]\w{7,14}$/;
     return !(password.length < 8 || !password.match(pass));
   };
-
-  // const login = async () => {
-  //   try {
-  //     let data = {
-  //       username: username,
-  //       password: password,
-  //     };
-  //     let response = await postApi(loginUrl, data);
-  //     if (response) {
-  //       setIsLoading(false);
-  //       if (response.status === 200 || response.status === 201) {
-  //         await AsyncStorage.setItem(
-  //           ASYNC_STORAGE.SWITCH_STATUS,
-  //           isSwitchEnable.toString(),
-  //         );
-  //         if (isSwitchEnable) {
-  //           await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
-  //         }
-  //         replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     setIsLoading(false);
-  //     setMessage('Tài khoản hoặc mật khẩu không chính xác');
-  //     setIsDisplayErrorDialog(true);
-  //   }
-  // };
 
   const toggleSwitch = () => {
     setIsSwitchEnable(!isSwitchEnable);
