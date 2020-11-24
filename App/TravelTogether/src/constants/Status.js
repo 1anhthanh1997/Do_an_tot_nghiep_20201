@@ -1,0 +1,6 @@
+const SUCCESS = 'SUCCESS';
+const LOADING = 'LOADING';
+const ERROR = 'ERROR';
+const DEFAULT = 'DEFAULT';
+
+export {SUCCESS, LOADING, ERROR, DEFAULT};

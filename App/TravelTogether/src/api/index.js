@@ -16,13 +16,14 @@ const getApi = async (lastUrl) => {
   return response.json();
 };
 const postApi = async (lastUrl, data) => {
+  console.log(data);
   const response = await axios({
     method: 'post',
     url: localUrl + lastUrl,
     data: data,
   });
   // const responseData = response.data;
-  console.log(response);
+  // console.log(response);
   return response;
 };
 

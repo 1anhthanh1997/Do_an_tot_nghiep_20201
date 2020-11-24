@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {getApi, postApi} from '../../../api';
 import loginStyles from './LoginStyles';
-import {ASYNC_STORAGE, IMG} from '../../../constants';
+import {ASYNC_STORAGE, IMG, STATUS} from '../../../constants';
 import {
   NAVIGATE_TO_FORGOT_PASSWORD,
   NAVIGATE_TO_REGISTER_SCREEN,
@@ -22,16 +22,19 @@ import {
 } from '../../../navigations/routers';
 import LoadingView from '../../../commons/loadingView/LoadingView';
 import {Dialog} from '../../../commons';
+import {connect} from 'react-redux';
+import {login} from '../../../store/f01/actions';
 
 const loginUrl = '/users/login';
 
-const Login = ({navigation}) => {
+const Login = ({navigation, login: _login, loginData}) => {
   const [username, setUserName] = useState(null);
   const [password, setPassword] = useState(null);
   const [isSwitchEnable, setIsSwitchEnable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisplayErrorDialog, setIsDisplayErrorDialog] = useState(false);
-  const [message, setMessage] = useState('');
+  const [errorCode, setErrorCode] = useState('EC0006');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const getUserName = async () => {
@@ -54,6 +57,24 @@ const Login = ({navigation}) => {
     getUserName().then();
   }, []);
 
+  useEffect(() => {
+    const onLoginSuccess = async () => {
+      if (isSwitchEnable) {
+        await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
+      }
+      replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
+    };
+    if (loginData.status === STATUS.SUCCESS) {
+      onLoginSuccess();
+    }
+    if (loginData.status === STATUS.ERROR) {
+      console.log(loginData.errorCode);
+      setErrorCode(loginData.errorCode);
+      setErrorMessage(loginData.errorMessage);
+      setIsDisplayErrorDialog(true);
+    }
+  }, [loginData]);
+
   const onPressRegister = () => {
     navigateToScreen(NAVIGATE_TO_REGISTER_SCREEN);
   };
@@ -62,12 +83,20 @@ const Login = ({navigation}) => {
     navigateToScreen(NAVIGATE_TO_FORGOT_PASSWORD);
   };
 
-  const onPressLogin = () => {
+  const onPressLogin = async () => {
     if (validate()) {
-      setIsLoading(true);
-      login();
+      // setIsLoading(true);
+      let data = {
+        username: username,
+        password: password,
+      };
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE.SWITCH_STATUS,
+        isSwitchEnable.toString(),
+      );
+      await _login(data);
     } else {
-      setMessage('Tài khoản hoặc mật khẩu không đúng định dạng.');
+      setErrorMessage('Tài khoản hoặc mật khẩu không đúng định dạng.');
       setIsDisplayErrorDialog(true);
     }
   };
@@ -77,32 +106,32 @@ const Login = ({navigation}) => {
     return !(password.length < 8 || !password.match(pass));
   };
 
-  const login = async () => {
-    try {
-      let data = {
-        username: username,
-        password: password,
-      };
-      let response = await postApi(loginUrl, data);
-      if (response) {
-        setIsLoading(false);
-        if (response.status === 200 || response.status === 201) {
-          await AsyncStorage.setItem(
-            ASYNC_STORAGE.SWITCH_STATUS,
-            isSwitchEnable.toString(),
-          );
-          if (isSwitchEnable) {
-            await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
-          }
-          replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
-        }
-      }
-    } catch (e) {
-      setIsLoading(false);
-      setMessage('Tài khoản hoặc mật khẩu không chính xác');
-      setIsDisplayErrorDialog(true);
-    }
-  };
+  // const login = async () => {
+  //   try {
+  //     let data = {
+  //       username: username,
+  //       password: password,
+  //     };
+  //     let response = await postApi(loginUrl, data);
+  //     if (response) {
+  //       setIsLoading(false);
+  //       if (response.status === 200 || response.status === 201) {
+  //         await AsyncStorage.setItem(
+  //           ASYNC_STORAGE.SWITCH_STATUS,
+  //           isSwitchEnable.toString(),
+  //         );
+  //         if (isSwitchEnable) {
+  //           await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
+  //         }
+  //         replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     setIsLoading(false);
+  //     setMessage('Tài khoản hoặc mật khẩu không chính xác');
+  //     setIsDisplayErrorDialog(true);
+  //   }
+  // };
 
   const toggleSwitch = () => {
     setIsSwitchEnable(!isSwitchEnable);
@@ -212,7 +241,7 @@ const Login = ({navigation}) => {
           onPressPositiveButton={() => setIsDisplayErrorDialog(false)}
           renderContent={
             <View style={loginStyles.dialog}>
-              <Text style={loginStyles.textContent}>{message}</Text>
+              <Text style={loginStyles.textContent}>{errorMessage}</Text>
             </View>
           }
         />
@@ -223,7 +252,7 @@ const Login = ({navigation}) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={loginStyles.screenView}>
-        <LoadingView visible={isLoading} />
+        <LoadingView visible={loginData.status === STATUS.LOADING} />
         {renderLogo()}
         {renderTextInput()}
         {renderSwitch()}
@@ -235,4 +264,16 @@ const Login = ({navigation}) => {
     </TouchableWithoutFeedback>
   );
 };
-export default Login;
+
+const mapStateToProps = (state) => {
+  const loginData = state.userInfoReducer;
+  return {
+    loginData,
+  };
+};
+
+// const mapDispatchToProps = {
+//   login: login,
+// };
+
+export default connect(mapStateToProps, {login})(Login);
