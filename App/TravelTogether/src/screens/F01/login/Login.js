@@ -266,14 +266,10 @@ const Login = ({navigation, login: _login, loginData}) => {
 };
 
 const mapStateToProps = (state) => {
-  const loginData = state.userInfoReducer;
+  const loginData = state.f01Reducer.login;
   return {
     loginData,
   };
 };
-
-// const mapDispatchToProps = {
-//   login: login,
-// };
 
 export default connect(mapStateToProps, {login})(Login);

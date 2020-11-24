@@ -9,4 +9,3 @@ export const validatePassword = (password) => {
 export const validateNormalForm = (string) => {
   return string;
 };
-
