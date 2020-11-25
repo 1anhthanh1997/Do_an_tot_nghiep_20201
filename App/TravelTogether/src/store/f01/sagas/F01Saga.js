@@ -7,7 +7,13 @@ import {
   REGISTER_SUCCESS,
   REGISTER_LOADING,
   REGISTER_FAIL,
+  CHANGE_PERSONAL_INFORMATION,
+  CHANGE_PERSONAL_INFORMATION_SUCCESS,
+  CHANGE_PERSONAL_INFORMATION_LOADING,
+  CHANGE_PERSONAL_INFORMATION_FAIL,
 } from '../actions/actionTypes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ASYNC_STORAGE} from '../../../constants';
 //Saga effects
 import {put, takeLatest} from 'redux-saga/effects';
 import {Api} from './Api';
@@ -17,10 +23,13 @@ function* login(data) {
     console.log('Saga');
     yield put({type: LOGIN_LOADING, payload: ''});
     const userInfo = yield Api.callLogin(data.payload);
-    yield console.log(userInfo);
+    // yield console.log(userInfo.token);
+    yield AsyncStorage.setItem(ASYNC_STORAGE.ACCESS_TOKEN, userInfo.token);
+    // const token = yield AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+    // yield console.log(token);
     yield put({type: LOGIN_SUCCESS, payload: userInfo.user});
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
     if (error.response.status === 404) {
       yield put({
         type: LOGIN_FAIL,
@@ -64,7 +73,20 @@ function* register(data) {
   }
 }
 
+function* changePersonalInformation(data) {
+  try {
+    yield put({type: CHANGE_PERSONAL_INFORMATION_LOADING, payload: ''});
+    const res = yield Api.callChangePersonalInformation(data.payload);
+    console.log(res);
+    yield put({type: CHANGE_PERSONAL_INFORMATION_SUCCESS, payload: res});
+    yield put({type: LOGIN_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+  }
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
+  yield takeLatest(CHANGE_PERSONAL_INFORMATION, changePersonalInformation);
 }

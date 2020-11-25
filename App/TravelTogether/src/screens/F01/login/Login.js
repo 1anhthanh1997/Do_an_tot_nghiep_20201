@@ -59,9 +59,13 @@ const Login = ({navigation, login: _login, loginData}) => {
 
   useEffect(() => {
     const onLoginSuccess = async () => {
-      console.log(loginData.loginResultData);
+      // console.log(loginData.loginResultData);
       if (isSwitchEnable) {
         await AsyncStorage.setItem(ASYNC_STORAGE.USERNAME, username);
+        // await AsyncStorage(
+        //   ASYNC_STORAGE.ACCESS_TOKEN,
+        //   loginData.loginResultData.token,
+        // );
       }
       replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
     };

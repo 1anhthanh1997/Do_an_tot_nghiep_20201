@@ -12,14 +12,30 @@ import {
   NAVIGATE_TO_CHANGE_PASSWORD,
   NAVIGATE_TO_LOGIN_SCREEN,
   NAVIGATE_TO_PERSONAL_INFORMATION_SCREEN,
+  NAVIGATE_TO_PERSONAL_SCREEN,
 } from '../../../navigations/routers';
-import {COLOR, IMG} from '../../../constants';
+import {COLOR, IMG, STATUS} from '../../../constants';
 import personalInformationStyles from './PersonalInformationStyles';
 import {Dialog} from '../../../commons';
 import {connect} from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
+import {changePersonalInformation} from '../../../store/f01/actions';
+import LoadingView from '../../../commons/loadingView/LoadingView';
 
-const PersonalInformation = ({navigation, loginData}) => {
+const PersonalInformation = ({
+  navigation,
+  loginData,
+  changePersonalInformationData,
+  changePersonalInformation: _changePersonalInformation,
+}) => {
+  const options = {
+    title: 'Select Avatar',
+    customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
   const personalListData = [
     {
       name: 'Họ và tên',
@@ -40,10 +56,29 @@ const PersonalInformation = ({navigation, loginData}) => {
     loginData.loginResultData.email,
     loginData.loginResultData.phoneNumber,
   ]);
+  const [avatarSource, setAvatarSource] = useState('');
+  const [errCode, setErrorCode] = useState('');
+  const [message, setMessage] = useState('');
+  const [isFirstLogin, setIsFirstLogin] = useState(true);
 
   useEffect(() => {
-    console.log(loginData.loginResultData.name);
-  }, []);
+    if (isFirstLogin) {
+      setIsFirstLogin(false);
+      return;
+    }
+    if (changePersonalInformationData.status === STATUS.SUCCESS) {
+      console.log(
+        changePersonalInformationData.changePersonalInformationResultData,
+      );
+      setMessage('Cập nhật thông tin thành công');
+      setIsDisplayDialog(true);
+    }
+    if (changePersonalInformationData.status === STATUS.ERROR) {
+      setErrorCode(loginData.errorCode);
+      setMessage(loginData.errorMessage);
+      setIsDisplayDialog(true);
+    }
+  }, [changePersonalInformationData]);
 
   const navigateToScreen = (name) => {
     navigation.navigate(name);
@@ -53,23 +88,40 @@ const PersonalInformation = ({navigation, loginData}) => {
     navigation.replace(name);
   };
 
-  const onPressTouchable = (index) => {
-    switch (index) {
-      case 0: {
-        navigateToScreen(NAVIGATE_TO_PERSONAL_INFORMATION_SCREEN);
-        break;
+  const onPressChooseImage = () => {
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.uri};
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        setAvatarSource(source);
       }
-      case 1: {
-        navigateToScreen(NAVIGATE_TO_CHANGE_PASSWORD);
-        break;
-      }
-      case 2: {
-        setIsDisplayDialog(true);
-        break;
-      }
-      default:
-        break;
-    }
+    });
+  };
+
+  const onPressUpdate = () => {
+    let data = {
+      name: valueData[0],
+      email: valueData[1],
+      phoneNumber: valueData[2],
+    };
+    _changePersonalInformation(data);
+  };
+
+  const onChangeInfo = (value, index) => {
+    let tmpArr = [...valueData];
+    tmpArr[index] = value;
+    setValueData(tmpArr);
   };
 
   const renderPersonalInformationItem = ({item, index}) => {
@@ -77,8 +129,10 @@ const PersonalInformation = ({navigation, loginData}) => {
       <View style={personalInformationStyles.personalInformationItemView}>
         <Text style={personalInformationStyles.titleText}>{item.name}</Text>
         <TextInput
+          caretHidden={index === 1}
           style={personalInformationStyles.textInput}
           value={valueData[index]}
+          onChangeText={(val) => onChangeInfo(val, index)}
         />
       </View>
     );
@@ -88,10 +142,12 @@ const PersonalInformation = ({navigation, loginData}) => {
     return (
       <View style={personalInformationStyles.headView}>
         <Image
-          source={IMG.defaultAvatar}
+          source={avatarSource ? {uri: avatarSource.uri} : IMG.defaultAvatar}
           style={personalInformationStyles.avatar}
         />
-        <TouchableOpacity style={personalInformationStyles.chooseImageButton}>
+        <TouchableOpacity
+          style={personalInformationStyles.chooseImageButton}
+          onPress={onPressChooseImage}>
           <Text style={personalInformationStyles.chooseImageButtonText}>
             Chọn ảnh
           </Text>
@@ -111,30 +167,42 @@ const PersonalInformation = ({navigation, loginData}) => {
     );
   };
 
+  const renderFooter = () => {
+    return (
+      <TouchableOpacity
+        style={[
+          personalInformationStyles.updateButton,
+          {backgroundColor: COLOR.blue},
+        ]}
+        onPress={onPressUpdate}>
+        <Text style={personalInformationStyles.updateText}>Cập nhật</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderDialog = () => {
     return (
       <Dialog
         visible={isDisplayDialog}
-        isDisplayTitle={true}
-        title={'Cảnh báo'}
-        isDisplayNegativeButton={true}
-        negativeButtonText={'Hủy'}
         isDisplayPositiveButton={true}
-        positiveButtonText={'Đồng ý'}
-        onPressNegativeButton={() => setIsDisplayDialog(false)}
+        positiveButtonText={'Đóng'}
         onPressPositiveButton={() => {
           setIsDisplayDialog(false);
-          replaceToScreen(NAVIGATE_TO_LOGIN_SCREEN);
+          navigateToScreen(NAVIGATE_TO_PERSONAL_SCREEN);
         }}
-        renderContent={<Text>Bạn có chắc chắn muốn đăng xuất?</Text>}
+        renderContent={<Text>{message}</Text>}
       />
     );
   };
 
   return (
     <View style={personalInformationStyles.screenView}>
+      <LoadingView
+        visible={changePersonalInformationData.status === STATUS.LOADING}
+      />
       {renderHeader()}
       {renderBody()}
+      {renderFooter()}
       {renderDialog()}
     </View>
   );
@@ -142,7 +210,11 @@ const PersonalInformation = ({navigation, loginData}) => {
 
 const mapStateToProps = (state) => {
   const loginData = state.f01Reducer.login;
-  return {loginData};
+  const changePersonalInformationData =
+    state.f02Reducer.changePersonalInformation;
+  return {loginData, changePersonalInformationData};
 };
 
-export default connect(mapStateToProps, null)(PersonalInformation);
+export default connect(mapStateToProps, {changePersonalInformation})(
+  PersonalInformation,
+);

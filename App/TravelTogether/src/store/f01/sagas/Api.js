@@ -1,6 +1,7 @@
-import {getApi, postApi} from '../../../api';
+import {getApi, postApi, patchApi} from '../../../api';
 const loginUrl = '/users/login';
 const registerUrl = '/users';
+const changePersonalInformationUrl = '/users/me';
 
 function* callLogin(data) {
   console.log('Call');
@@ -22,4 +23,13 @@ function* callRegister(data) {
   return userInfo;
 }
 
-export const Api = {callLogin, callRegister};
+function* callChangePersonalInformation(data) {
+  console.log(data);
+  const response = yield patchApi(changePersonalInformationUrl, data);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
+export const Api = {callLogin, callRegister, callChangePersonalInformation};

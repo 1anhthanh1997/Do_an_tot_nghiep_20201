@@ -64,7 +64,19 @@ const personalInformationStyles = StyleSheet.create({
     fontSize: 14,
     color: COLOR.gray,
   },
+  updateButton: {
+    width: '100%',
+    height: 50,
+    position: 'absolute',
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  updateText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 });
-
 
 export default personalInformationStyles;
