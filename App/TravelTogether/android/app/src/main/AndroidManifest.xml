@@ -13,6 +13,10 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:requestLegacyExternalStorage="true">
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I"/>
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
       <activity
         android:name=".MainActivity"

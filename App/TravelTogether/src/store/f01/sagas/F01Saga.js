@@ -11,6 +11,9 @@ import {
   CHANGE_PERSONAL_INFORMATION_SUCCESS,
   CHANGE_PERSONAL_INFORMATION_LOADING,
   CHANGE_PERSONAL_INFORMATION_FAIL,
+  CHANGE_PASSWORD_LOADING,
+  CHANGE_PASSWORD_SUCCESS,
+  CHANGE_PASSWORD, CHANGE_PASSWORD_FAIL,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -82,6 +85,31 @@ function* changePersonalInformation(data) {
     yield put({type: LOGIN_SUCCESS, payload: res});
   } catch (e) {
     console.log(e.response);
+    yield put({
+      type: CHANGE_PERSONAL_INFORMATION_FAIL,
+      payload: {
+        errorCode: 'EC0003',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
+function* changePassword(data) {
+  try {
+    yield put({type: CHANGE_PASSWORD_LOADING, payload: ''});
+    const res = yield Api.callChangePassword(data.payload);
+    console.log(res);
+    yield put({type: CHANGE_PASSWORD_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: CHANGE_PASSWORD_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
   }
 }
 
@@ -89,4 +117,5 @@ export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
   yield takeLatest(CHANGE_PERSONAL_INFORMATION, changePersonalInformation);
+  yield takeLatest(CHANGE_PASSWORD, changePassword);
 }

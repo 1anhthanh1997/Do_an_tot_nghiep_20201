@@ -147,32 +147,42 @@ const Register = ({navigation, register: _register, registerData}) => {
     let tmpArr = [...error];
     if (!validateUserName(infoForm[0])) {
       tmpArr[0] = 'Tên đăng nhập là trường bắt buộc và phải có ít nhất 8 ký tự';
+      return;
     } else {
       tmpArr[0] = null;
     }
     if (!validatePassword(infoForm[1])) {
       tmpArr[1] = 'Mật khẩu là trường bắt buộc và phải có ít nhất 8 ký tự';
+      return;
     } else {
       tmpArr[1] = null;
     }
     if (!validatePassword(infoForm[2])) {
       tmpArr[2] =
         'Xác nhận mật khẩu là trường bắt buộc và phải có ít nhất 8 ký tự';
-    } else {
-      tmpArr[2] = null;
+      return;
     }
+    if (infoForm[2] !== infoForm[1]) {
+      tmpArr[2] = 'Xác nhận mật khẩu không trùng khớp';
+      return;
+    }
+    tmpArr[2] = null;
+
     if (!validateNormalForm(infoForm[3])) {
       tmpArr[3] = 'Họ và tên là trường bắt buộc';
+      return;
     } else {
       tmpArr[3] = null;
     }
     if (!validateNormalForm(infoForm[4])) {
       tmpArr[4] = 'Email là trường bắt buộc';
+      return;
     } else {
       tmpArr[4] = null;
     }
     if (!validateNormalForm(infoForm[5])) {
       tmpArr[5] = 'Số điện thoại là trường bắt buộc';
+      return;
     } else {
       tmpArr[5] = null;
     }

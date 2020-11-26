@@ -35,6 +35,7 @@ const Login = ({navigation, login: _login, loginData}) => {
   const [isDisplayErrorDialog, setIsDisplayErrorDialog] = useState(false);
   const [errorCode, setErrorCode] = useState('EC0006');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isFirstLogin, setIsFirstLogin] = useState(true);
 
   useEffect(() => {
     const getUserName = async () => {
@@ -58,6 +59,10 @@ const Login = ({navigation, login: _login, loginData}) => {
   }, []);
 
   useEffect(() => {
+    if (isFirstLogin) {
+      setIsFirstLogin(false);
+      return;
+    }
     const onLoginSuccess = async () => {
       // console.log(loginData.loginResultData);
       if (isSwitchEnable) {

@@ -26,6 +26,7 @@ import {
   PersonalInformation,
   ChangePassword,
 } from '../screens';
+import {COLOR} from '../constants';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,6 +37,18 @@ const loginOption = {
 
 const registerOption = {
   headerTitle: 'Đăng ký',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
+};
+
+const changePasswordOption = {
+  headerTitle: 'Đổi mật khẩu',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
 };
 
 const bottomTabOption = {
@@ -126,7 +139,7 @@ const RootNavigator = () => {
         <Stack.Screen
           name={NAVIGATE_TO_CHANGE_PASSWORD}
           component={ChangePassword}
-          options={bottomTabOption}
+          options={changePasswordOption}
         />
       </Stack.Navigator>
     </NavigationContainer>

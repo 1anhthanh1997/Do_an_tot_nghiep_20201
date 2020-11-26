@@ -1,4 +1,9 @@
-import {LOGIN, REGISTER, CHANGE_PERSONAL_INFORMATION} from './actionTypes';
+import {
+  LOGIN,
+  REGISTER,
+  CHANGE_PERSONAL_INFORMATION,
+  CHANGE_PASSWORD,
+} from './actionTypes';
 
 const login = (data) => {
   return {
@@ -21,4 +26,11 @@ const changePersonalInformation = (data) => {
   };
 };
 
-export {login, register, changePersonalInformation};
+const changePassword = (data) => {
+  return {
+    type: CHANGE_PASSWORD,
+    payload: data,
+  };
+};
+
+export {login, register, changePersonalInformation, changePassword};

@@ -39,15 +39,12 @@ const PersonalInformation = ({
   const personalListData = [
     {
       name: 'Họ và tên',
-      value: loginData.loginResultData.name,
     },
     {
       name: 'Email',
-      value: loginData.loginResultData.email,
     },
     {
       name: 'Số điện thoại',
-      value: loginData.loginResultData.phoneNumber,
     },
   ];
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
