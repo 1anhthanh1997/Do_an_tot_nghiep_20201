@@ -1,25 +1,22 @@
-import React, {useState} from 'react';
-import {View, Text} from 'react-native';
-import {Dialog} from '../../../commons';
+import React from 'react';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 const ForgotPassword = () => {
-  const [isDisplayDialog, setIsDisplayDialog] = useState(true);
   return (
-    <View style={{flex: 1}}>
-      <Text>ForgotPassword</Text>
-      <Dialog
-        visible={isDisplayDialog}
-        isDisplayTitle={true}
-        title={'This is title'}
-        isDisplayNegativeButton={true}
-        negativeButtonText={'Thử lại'}
-        isDisplayPositiveButton={true}
-        positiveButtonText={'Đóng'}
-        onPressNegativeButton={() => setIsDisplayDialog(!isDisplayDialog)}
-        onPressPositiveButton={() => setIsDisplayDialog(!isDisplayDialog)}
-        renderContent={<Text>Hello</Text>}
-      />
-    </View>
+    <GooglePlacesAutocomplete
+      placeholder="Search"
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      fetchDetails={true}
+      listViewDisplayed={false}
+      query={{
+        key: 'AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I',
+        language: 'en',
+      }}
+    />
   );
 };
+
 export default ForgotPassword;

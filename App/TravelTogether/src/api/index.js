@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../constants';
 
 const baseUrl = 'https://open-drone-map.herokuapp.com';
-const localUrl = 'http://192.168.55.108:3000';
+// const baseUrl = 'http://192.168.55.108:3000';
 
 const getApi = async (lastUrl) => {
   const response = await axios({
@@ -22,7 +22,7 @@ const postApi = async (lastUrl, data) => {
   console.log(data);
   const response = await axios({
     method: 'post',
-    url: localUrl + lastUrl,
+    url: baseUrl + lastUrl,
     data: data,
   });
   // const responseData = response.data;
@@ -44,7 +44,7 @@ const patchApi = async (lastUrl, data) => {
     headers: {
       Authorization: 'Bearer ' + token,
     },
-    url: localUrl + lastUrl,
+    url: baseUrl + lastUrl,
     data: data,
   });
   // const responseData = response.data;
