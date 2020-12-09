@@ -7,6 +7,8 @@ import Personal from './F02/personal/Personal';
 import Trip from './F02/trip/Trip';
 import PersonalInformation from './F02/personalInformation/PersonalInformation';
 import ChangePassword from './F02/changePassword/ChangePassword';
+import CreateTrip from './F02/createTrip/CreateTrip';
+import TripDetail from './F02/tripDetail/TripDetail';
 
 export {
   Login,
@@ -16,6 +18,8 @@ export {
   Notification,
   Personal,
   Trip,
+  CreateTrip,
+  TripDetail,
   PersonalInformation,
   ChangePassword,
 };

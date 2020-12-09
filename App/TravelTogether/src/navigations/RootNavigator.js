@@ -14,6 +14,8 @@ import {
   NAVIGATE_TO_PERSONAL_SCREEN,
   NAVIGATE_TO_PERSONAL_INFORMATION_SCREEN,
   NAVIGATE_TO_CHANGE_PASSWORD,
+  NAVIGATE_TO_CREATE_TRIP,
+  NAVIGATE_TO_TRIP_DETAIL,
 } from './routers';
 import {
   Login,
@@ -22,6 +24,8 @@ import {
   ForgotPassword,
   Notification,
   Trip,
+  CreateTrip,
+  TripDetail,
   Personal,
   PersonalInformation,
   ChangePassword,
@@ -49,6 +53,18 @@ const changePasswordOption = {
     backgroundColor: COLOR.blue,
   },
   headerTintColor: COLOR.white,
+};
+
+const createTripOption = {
+  headerTitle: 'Tạo chuyến đi',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
+};
+
+const tripDetailOption = {
+  headerShown: false,
 };
 
 const bottomTabOption = {
@@ -140,6 +156,16 @@ const RootNavigator = () => {
           name={NAVIGATE_TO_CHANGE_PASSWORD}
           component={ChangePassword}
           options={changePasswordOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_CREATE_TRIP}
+          component={CreateTrip}
+          options={createTripOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_TRIP_DETAIL}
+          component={TripDetail}
+          options={tripDetailOption}
         />
       </Stack.Navigator>
     </NavigationContainer>
