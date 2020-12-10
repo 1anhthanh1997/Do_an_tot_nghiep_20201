@@ -43,6 +43,14 @@ const createTripStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLOR.black,
   },
+  dateTouchable: {
+    width: '100%',
+    height: 45,
+    borderBottomWidth: 1,
+    borderBottomColor: COLOR.black,
+    justifyContent: 'center',
+    paddingLeft: 5
+  },
   createTripTouchable: {
     height: 44,
     width: 60,
