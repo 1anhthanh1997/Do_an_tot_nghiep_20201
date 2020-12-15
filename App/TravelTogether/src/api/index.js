@@ -52,4 +52,21 @@ const patchApi = async (lastUrl, data) => {
   return response;
 };
 
-export {getApi, postApi, patchApi};
+const secondPatchApi = async (lastUrl, id, data) => {
+  const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+  const header = {
+    Authorization: 'Bearer ' + token,
+  };
+  console.log(data);
+  const response = await axios({
+    method: 'patch',
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+    url: baseUrl + lastUrl + id,
+    data: data,
+  });
+  return response;
+};
+
+export {getApi, postApi, patchApi, secondPatchApi};

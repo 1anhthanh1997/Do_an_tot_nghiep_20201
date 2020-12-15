@@ -5,6 +5,11 @@ import {
   CHANGE_PASSWORD_SUCCESS,
   CHANGE_PASSWORD_LOADING,
   CHANGE_PASSWORD_FAIL,
+  GET_ALL_TRIP_SUCCESS,
+  GET_ALL_TRIP_LOADING,
+  GET_ALL_TRIP_FAIL,
+  CREATE_TRIP_SUCCESS,
+  CREATE_TRIP_LOADING, CREATE_TRIP_FAIL, EDIT_TRIP, EDIT_TRIP_SUCCESS, EDIT_TRIP_LOADING, EDIT_TRIP_FAIL,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -19,6 +24,24 @@ const initUserInfo = {
   changePassword: {
     status: STATUS.DEFAULT,
     changePasswordResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  getAllTrip: {
+    status: STATUS.DEFAULT,
+    getAllTripResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  createTrip: {
+    status: STATUS.DEFAULT,
+    createTripResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  editTrip: {
+    status: STATUS.DEFAULT,
+    editTripResultData: {},
     errorCode: '',
     errorMessage: '',
   },
@@ -69,6 +92,78 @@ const f02Reducer = (info = initUserInfo, action) => {
       return {
         ...info,
         changePassword: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case GET_ALL_TRIP_SUCCESS:
+      return {
+        ...info,
+        getAllTrip: {
+          status: STATUS.SUCCESS,
+          getAllTripResultData: action.payload,
+        },
+      };
+    case GET_ALL_TRIP_LOADING:
+      return {
+        ...info,
+        getAllTrip: {
+          status: STATUS.LOADING,
+        },
+      };
+    case GET_ALL_TRIP_FAIL:
+      return {
+        ...info,
+        getAllTrip: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case CREATE_TRIP_SUCCESS:
+      return {
+        ...info,
+        createTrip: {
+          status: STATUS.SUCCESS,
+          createTripResultData: action.payload,
+        },
+      };
+    case CREATE_TRIP_LOADING:
+      return {
+        ...info,
+        createTrip: {
+          status: STATUS.LOADING,
+        },
+      };
+    case CREATE_TRIP_FAIL:
+      return {
+        ...info,
+        createTrip: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case EDIT_TRIP_SUCCESS:
+      return {
+        ...info,
+        editTrip: {
+          status: STATUS.SUCCESS,
+          editTripResultData: action.payload,
+        },
+      };
+    case EDIT_TRIP_LOADING:
+      return {
+        ...info,
+        editTrip: {
+          status: STATUS.LOADING,
+        },
+      };
+    case EDIT_TRIP_FAIL:
+      return {
+        ...info,
+        editTrip: {
           status: STATUS.ERROR,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage,

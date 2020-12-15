@@ -3,6 +3,9 @@ import {
   REGISTER,
   CHANGE_PERSONAL_INFORMATION,
   CHANGE_PASSWORD,
+  GET_ALL_TRIP,
+  CREATE_TRIP,
+  EDIT_TRIP,
 } from './actionTypes';
 
 const login = (data) => {
@@ -33,4 +36,33 @@ const changePassword = (data) => {
   };
 };
 
-export {login, register, changePersonalInformation, changePassword};
+const getAllTrip = (data) => {
+  return {
+    type: GET_ALL_TRIP,
+    payload: data,
+  };
+};
+
+const createTrip = (data) => {
+  return {
+    type: CREATE_TRIP,
+    payload: data,
+  };
+};
+
+const editTrip = (data) => {
+  return {
+    type: EDIT_TRIP,
+    payload: data,
+  };
+};
+
+export {
+  login,
+  register,
+  changePersonalInformation,
+  changePassword,
+  getAllTrip,
+  createTrip,
+  editTrip,
+};

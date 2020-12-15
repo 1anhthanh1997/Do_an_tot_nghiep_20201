@@ -1,8 +1,10 @@
-import {getApi, postApi, patchApi} from '../../../api';
+import {getApi, postApi, patchApi, secondPatchApi} from '../../../api';
 const loginUrl = '/users/login';
 const registerUrl = '/users';
 const changePersonalInformationUrl = '/users/me';
 const changePasswordUrl = '/users/changePass';
+const getAllTripUrl = '/tripList';
+const postApiUrl = '/trip';
 
 function* callLogin(data) {
   console.log('Call');
@@ -41,9 +43,36 @@ function* callChangePassword(data) {
   return responseData;
 }
 
+function* callGetAllTrip() {
+  const response = yield getApi(getAllTripUrl);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
+function* createTrip(trip) {
+  const response = yield postApi(postApiUrl, trip);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
+function* editTrip(tripId, newTrip) {
+  const response = yield secondPatchApi(postApiUrl, tripId, newTrip);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
 export const Api = {
   callLogin,
   callRegister,
   callChangePersonalInformation,
   callChangePassword,
+  callGetAllTrip,
+  createTrip,
+  editTrip,
 };
