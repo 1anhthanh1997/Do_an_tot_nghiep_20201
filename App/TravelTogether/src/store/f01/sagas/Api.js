@@ -10,7 +10,8 @@ const registerUrl = '/users';
 const changePersonalInformationUrl = '/users/me';
 const changePasswordUrl = '/users/changePass';
 const getAllTripUrl = '/tripList';
-const postApiUrl = '/trip';
+const postTripUrl = '/trip';
+const editTripUrl = '/editTrip/';
 
 function* callLogin(data) {
   console.log('Call');
@@ -58,7 +59,7 @@ function* callGetAllTrip() {
 }
 
 function* callCreateTrip(trip) {
-  const response = yield userPostApi(postApiUrl, trip);
+  const response = yield userPostApi(postTripUrl, trip);
   const responseData = yield response.status === 200 || response.status === 201
     ? response.data
     : {};
@@ -66,7 +67,7 @@ function* callCreateTrip(trip) {
 }
 
 function* callEditTrip(tripId, newTrip) {
-  const response = yield secondPatchApi(postApiUrl, tripId, newTrip);
+  const response = yield secondPatchApi(editTripUrl, tripId, newTrip);
   const responseData = yield response.status === 200 || response.status === 201
     ? response.data
     : {};

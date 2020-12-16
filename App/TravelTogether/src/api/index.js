@@ -71,16 +71,18 @@ const patchApi = async (lastUrl, data) => {
 
 const secondPatchApi = async (lastUrl, id, data) => {
   const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
-  const header = {
-    Authorization: 'Bearer ' + token,
-  };
+  // const header = {
+  //   Authorization: 'Bearer ' + token,
+  // };
+  let fullUrl = baseUrl + lastUrl + id;
+  console.log(fullUrl);
   console.log(data);
   const response = await axios({
     method: 'patch',
     headers: {
       Authorization: 'Bearer ' + token,
     },
-    url: baseUrl + lastUrl + id,
+    url: fullUrl,
     data: data,
   });
   return response;

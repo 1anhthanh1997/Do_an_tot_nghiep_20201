@@ -165,10 +165,11 @@ function* createTrip(trip) {
   }
 }
 
-function* editTrip(tripId, newTrip) {
+function* editTrip(newTrip) {
   try {
     yield put({type: EDIT_TRIP_LOADING, payload: ''});
-    const res = yield Api.callEditTrip(tripId, newTrip);
+    console.log(newTrip.payload);
+    const res = yield Api.callEditTrip(newTrip.payload._id, newTrip.payload);
     console.log(res);
     yield put({type: EDIT_TRIP_SUCCESS, payload: res});
   } catch (e) {

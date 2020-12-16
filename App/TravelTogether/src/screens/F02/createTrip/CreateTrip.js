@@ -7,12 +7,14 @@ import {useFocusEffect} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   NAVIGATE_TO_HOME_SCREEN,
+  NAVIGATE_TO_PERSONAL_SCREEN,
   NAVIGATE_TO_TAB_SCREEN,
   NAVIGATE_TO_TRIP_SCREEN,
 } from '../../../navigations/routers';
 import {connect} from 'react-redux';
 import {createTrip, getAllTrip} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
+import {Dialog} from '../../../commons';
 
 const imageUri =
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHw%3D&w=1000&q=80';
@@ -31,6 +33,9 @@ const CreateTrip = ({
   const [endDate, setEndDate] = useState(new Date(1598051730000));
   const [isDisplayPickStartDate, setIsDisplayPickStartDate] = useState(false);
   const [isDisplayPickEndDate, setIsDisplayPickEndDate] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isDisplayDialog, setIsDisplayDialog] = useState(false);
+  const [errCode, setErrorCode] = useState('');
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -51,15 +56,28 @@ const CreateTrip = ({
       return;
     }
     if (getAllTripData.status === STATUS.SUCCESS) {
-      navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+      setMessage('Tạo chuyến đi thành công');
+      setIsDisplayDialog(true);
+    }
+    if (getAllTripData.status === STATUS.ERROR) {
+      setErrorCode(getAllTripData.errorCode);
+      setMessage(getAllTripData.errorMessage);
+      setIsDisplayDialog(true);
     }
   }, [getAllTripData]);
 
   useEffect(() => {
+    if (isFistTime) {
+      setIsFirstTime(false);
+      return;
+    }
     if (createTripData.status === STATUS.SUCCESS) {
       _getAllTrip();
     }
     if (createTripData.status === STATUS.ERROR) {
+      setErrorCode(getAllTripData.errorCode);
+      setMessage(getAllTripData.errorMessage);
+      setIsDisplayDialog(true);
     }
   }, [createTripData]);
 
@@ -166,6 +184,23 @@ const CreateTrip = ({
     );
   };
 
+  const renderDialog = () => {
+    return (
+      <Dialog
+        visible={isDisplayDialog}
+        isDisplayPositiveButton={true}
+        positiveButtonText={'Đóng'}
+        onPressPositiveButton={() => {
+          setIsDisplayDialog(false);
+          if (!errCode) {
+            navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+          }
+        }}
+        renderContent={<Text>{message}</Text>}
+      />
+    );
+  };
+
   return (
     <View style={createTripStyles.screenView}>
       <LoadingView
@@ -175,6 +210,7 @@ const CreateTrip = ({
         }
       />
       {renderBody()}
+      {renderDialog()}
     </View>
   );
 };

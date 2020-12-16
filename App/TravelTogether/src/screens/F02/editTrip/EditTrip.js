@@ -8,11 +8,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   NAVIGATE_TO_HOME_SCREEN,
   NAVIGATE_TO_TAB_SCREEN,
+  NAVIGATE_TO_TRIP_DETAIL,
   NAVIGATE_TO_TRIP_SCREEN,
 } from '../../../navigations/routers';
 import {connect} from 'react-redux';
-import {createTrip, getAllTrip} from '../../../store/f01/actions';
+import {editTrip, getAllTrip} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
+import {Dialog} from '../../../commons';
 
 const imageUri =
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHw%3D&w=1000&q=80';
@@ -20,9 +22,9 @@ const imageUri =
 const EditTrip = ({
   route,
   navigation,
-  createTripData,
+  editTripData,
   getAllTripData,
-  createTrip: _createTrip,
+  editTrip: _editTrip,
   getAllTrip: _getAllTrip,
 }) => {
   const {trip} = route.params;
@@ -33,6 +35,9 @@ const EditTrip = ({
   const [endDate, setEndDate] = useState(new Date(trip.endDate));
   const [isDisplayPickStartDate, setIsDisplayPickStartDate] = useState(false);
   const [isDisplayPickEndDate, setIsDisplayPickEndDate] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isDisplayDialog, setIsDisplayDialog] = useState(false);
+  const [errCode, setErrorCode] = useState('');
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -47,34 +52,46 @@ const EditTrip = ({
   });
 
   useEffect(() => {
-    console.log(trip);
     if (isFistTime) {
       setIsFirstTime(false);
-      console.log(isFistTime);
       return;
     }
     if (getAllTripData.status === STATUS.SUCCESS) {
-      navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+      setMessage('Chỉnh sửa chuyến đi thành công');
+      setIsDisplayDialog(true);
+    }
+    if (getAllTripData.status === STATUS.ERROR) {
+      setErrorCode(getAllTripData.errorCode);
+      setMessage(getAllTripData.errorMessage);
+      setIsDisplayDialog(true);
     }
   }, [getAllTripData]);
 
   useEffect(() => {
-    if (createTripData.status === STATUS.SUCCESS) {
+    if (isFistTime) {
+      setIsFirstTime(false);
+      return;
+    }
+    if (editTripData.status === STATUS.SUCCESS) {
       _getAllTrip();
     }
-    if (createTripData.status === STATUS.ERROR) {
+    if (editTripData.status === STATUS.ERROR) {
+      setErrorCode(getAllTripData.errorCode);
+      setMessage(getAllTripData.errorMessage);
+      setIsDisplayDialog(true);
     }
-  }, [createTripData]);
+  }, [editTripData]);
 
   const onPressCreateTrip = async () => {
-    let trip = {
+    let newTrip = {
+      _id: trip._id,
       groupName: tripName,
       groupDescription: tripDescription,
       startDate: startDate,
       endDate: endDate,
     };
-    console.log(trip);
-    await _createTrip(trip);
+    console.log(newTrip);
+    await _editTrip(newTrip);
     // navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
   };
 
@@ -125,7 +142,7 @@ const EditTrip = ({
             <Text>
               {startDate.getDate() +
                 '/' +
-                startDate.getMonth() +
+                (startDate.getMonth() + 1) +
                 '/' +
                 startDate.getFullYear()}
             </Text>
@@ -148,7 +165,7 @@ const EditTrip = ({
             <Text>
               {endDate.getDate() +
                 '/' +
-                endDate.getMonth() +
+                (endDate.getMonth() + 1) +
                 '/' +
                 endDate.getFullYear()}
             </Text>
@@ -167,22 +184,40 @@ const EditTrip = ({
     );
   };
 
+  const renderDialog = () => {
+    return (
+      <Dialog
+        visible={isDisplayDialog}
+        isDisplayPositiveButton={true}
+        positiveButtonText={'Đóng'}
+        onPressPositiveButton={() => {
+          setIsDisplayDialog(false);
+          if (!errCode) {
+            navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+          }
+        }}
+        renderContent={<Text>{message}</Text>}
+      />
+    );
+  };
+
   return (
     <View style={editTripStyles.screenView}>
       <LoadingView
         visible={
-          createTripData.status === STATUS.LOADING ||
+          editTripData.status === STATUS.LOADING ||
           getAllTripData.status === STATUS.LOADING
         }
       />
       {renderBody()}
+      {renderDialog()}
     </View>
   );
 };
 const mapStateToProps = (state) => {
-  const createTripData = state.f02Reducer.createTrip;
+  const editTripData = state.f02Reducer.editTrip;
   const getAllTripData = state.f02Reducer.getAllTrip;
-  return {createTripData, getAllTripData};
+  return {editTripData, getAllTripData};
 };
 
-export default connect(mapStateToProps, {createTrip, getAllTrip})(EditTrip);
+export default connect(mapStateToProps, {editTrip, getAllTrip})(EditTrip);

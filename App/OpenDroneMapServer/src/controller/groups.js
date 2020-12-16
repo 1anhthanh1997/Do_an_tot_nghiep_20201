@@ -127,8 +127,10 @@ exports.createTrip = async (req, res) => {
 
 exports.editTrip = async (req, res) => {
     try {
-        // let editedTrip=await Group.find({_id:req.params.id})
-        res.send("Hello")
+        console.log(req.params.id)
+        let editedTrip = await Group.updateOne({_id: req.params.id}, req.body)
+        res.status(200).send(editedTrip)
+
     } catch (e) {
         console.log(e)
     }
