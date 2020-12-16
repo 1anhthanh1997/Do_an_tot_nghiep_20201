@@ -2,20 +2,21 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../constants';
 
-const baseUrl = 'https://open-drone-map.herokuapp.com';
-// const baseUrl = 'http://192.168.55.108:3000';
+// const baseUrl = 'https://open-drone-map.herokuapp.com';
+const baseUrl = 'http://192.168.55.108:3000';
 
 const getApi = async (lastUrl) => {
+  const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+  // await console.log(token);
+  // await console.log(baseUrl + lastUrl);
   const response = await axios({
     method: 'get',
     url: baseUrl + lastUrl,
-    header: {
-      'Content-Type': 'application/json',
-      // 'Content-Type': 'application/x-www-form-urlencoded',
+    headers: {
+      Authorization: 'Bearer ' + token,
     },
-    params: {},
   });
-  return response.json();
+  return response;
 };
 
 const postApi = async (lastUrl, data) => {
@@ -23,6 +24,22 @@ const postApi = async (lastUrl, data) => {
   const response = await axios({
     method: 'post',
     url: baseUrl + lastUrl,
+    data: data,
+  });
+  // const responseData = response.data;
+  // console.log(response);
+  return response;
+};
+
+const userPostApi = async (lastUrl, data) => {
+  console.log(data);
+  const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+  const response = await axios({
+    method: 'post',
+    url: baseUrl + lastUrl,
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
     data: data,
   });
   // const responseData = response.data;
@@ -69,4 +86,4 @@ const secondPatchApi = async (lastUrl, id, data) => {
   return response;
 };
 
-export {getApi, postApi, patchApi, secondPatchApi};
+export {getApi, postApi, userPostApi, patchApi, secondPatchApi};

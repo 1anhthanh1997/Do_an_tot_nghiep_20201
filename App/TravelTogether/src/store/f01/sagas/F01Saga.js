@@ -26,6 +26,7 @@ import {
   EDIT_TRIP_SUCCESS,
   EDIT_TRIP_FAIL,
   EDIT_TRIP,
+  GET_ALL_TRIP_LOADING,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -92,6 +93,7 @@ function* changePersonalInformation(data) {
   try {
     yield put({type: CHANGE_PERSONAL_INFORMATION_LOADING, payload: ''});
     const res = yield Api.callChangePersonalInformation(data.payload);
+    console.log('Hello');
     console.log(res);
     yield put({type: CHANGE_PERSONAL_INFORMATION_SUCCESS, payload: res});
     yield put({type: LOGIN_SUCCESS, payload: res});
@@ -127,12 +129,13 @@ function* changePassword(data) {
 
 function* getAllTrip() {
   try {
-    yield put({type: GET_ALL_TRIP, payload: ''});
+    console.log('Hello');
+    yield put({type: GET_ALL_TRIP_LOADING, payload: ''});
     const res = yield Api.callGetAllTrip();
     console.log(res);
     yield put({type: GET_ALL_TRIP_SUCCESS, payload: res});
   } catch (e) {
-    console.log(e.response);
+    console.log(e);
     yield put({
       type: GET_ALL_TRIP_FAIL,
       payload: {
@@ -145,8 +148,9 @@ function* getAllTrip() {
 
 function* createTrip(trip) {
   try {
+    console.log('Hello');
     yield put({type: CREATE_TRIP_LOADING, payload: ''});
-    const res = yield Api.callCreateTrip(trip);
+    const res = yield Api.callCreateTrip(trip.payload);
     console.log(res);
     yield put({type: CREATE_TRIP_SUCCESS, payload: res});
   } catch (e) {

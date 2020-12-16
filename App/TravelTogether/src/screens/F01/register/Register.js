@@ -46,7 +46,7 @@ const inputData = [
   },
 ];
 
-const Register = ({navigation, register: _register, registerData}) => {
+const Register = ({route, navigation, register: _register, registerData}) => {
   const [infoForm, setInfoForm] = useState([
     null,
     null,
@@ -63,9 +63,11 @@ const Register = ({navigation, register: _register, registerData}) => {
   const [errorCode, setErrorCode] = useState('');
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  // const {test} = route.params;
 
   useEffect(() => {
-    console.log(infoForm);
+    // console.log(test);
+    // console.log(infoForm);
   }, [infoForm]);
 
   useEffect(() => {
@@ -111,28 +113,6 @@ const Register = ({navigation, register: _register, registerData}) => {
       await _register(formData);
     }
   };
-
-  // const register = async (formData) => {
-  //   try {
-  //     const response = await postApi('/users', formData);
-  //     setIsLoading(false);
-  //     console.log(response);
-  //     if (response.status === 201) {
-  //       setMessage('Đăng ký tài khoản thành công');
-  //       setIsDisplayDialog(true);
-  //     }
-  //   } catch (e) {
-  //     setIsLoading(false);
-  //     if (e.response.status === 409) {
-  //       const tmpError = [...error];
-  //       tmpError[0] = 'Tên người dùng đã tồn tại';
-  //       setError(tmpError);
-  //     } else {
-  //       setMessage('Đã xảy ra lỗi');
-  //       setIsDisplayErrorDialog(true);
-  //     }
-  //   }
-  // };
 
   const checkHasError = () => {
     error.map((item) => {

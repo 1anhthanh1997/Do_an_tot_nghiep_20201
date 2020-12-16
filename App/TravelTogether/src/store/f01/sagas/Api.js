@@ -1,4 +1,10 @@
-import {getApi, postApi, patchApi, secondPatchApi} from '../../../api';
+import {
+  getApi,
+  postApi,
+  userPostApi,
+  patchApi,
+  secondPatchApi,
+} from '../../../api';
 const loginUrl = '/users/login';
 const registerUrl = '/users';
 const changePersonalInformationUrl = '/users/me';
@@ -52,7 +58,7 @@ function* callGetAllTrip() {
 }
 
 function* callCreateTrip(trip) {
-  const response = yield postApi(postApiUrl, trip);
+  const response = yield userPostApi(postApiUrl, trip);
   const responseData = yield response.status === 200 || response.status === 201
     ? response.data
     : {};

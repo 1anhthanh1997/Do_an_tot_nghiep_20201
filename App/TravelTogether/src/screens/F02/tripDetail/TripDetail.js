@@ -29,12 +29,38 @@ const placeData = [
   },
 ];
 
+const initPosition = {
+  coords: {
+    accuracy: 38.592002868652344,
+    altitude: -10.39990234375,
+    heading: 17.299999237060547,
+    latitude: 21.00649209,
+    longitude: 105.86405619,
+    speed: 0.5099999904632568,
+  },
+  mocked: false,
+  timestamp: 1608108043000,
+};
+
 const imageUri =
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHw%3D&w=1000&q=80';
 
-const TripDetail = () => {
+const TripDetail = ({route, navigation}) => {
+  const {trip} = route.params;
+  const [position, setPosition] = useState(initPosition);
+
   useEffect(() => {
-    Geolocation.getCurrentPosition((info) => console.log(info));
+    console.log(trip);
+    Geolocation.getCurrentPosition(
+      (position) => {
+        setPosition(position);
+      },
+      (error) => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
   });
 
   const renderPlaceItem = ({item}) => {
@@ -59,8 +85,8 @@ const TripDetail = () => {
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={tripDetailStyles.map}
         region={{
-          latitude: 21.0067485,
-          longitude: 105.8631832,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
         }}
@@ -71,9 +97,9 @@ const TripDetail = () => {
         // animatedValue={this._draggedValue}
         showBackdrop={false}>
         <View style={tripDetailStyles.panel}>
-          <Text style={tripDetailStyles.tripName}>First trip</Text>
+          <Text style={tripDetailStyles.tripName}>{trip.groupName}</Text>
           <Text style={tripDetailStyles.tripDescription}>
-            This is first trip
+            {trip.groupDescription}
           </Text>
           <View style={tripDetailStyles.optionView}>
             <TouchableOpacity style={tripDetailStyles.optionItemView}>

@@ -101,14 +101,14 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name={NAVIGATE_TO_HOME_SCREEN}
-        component={Home}
-        options={tabHomeOption}
-      />
-      <Tab.Screen
         name={NAVIGATE_TO_TRIP_SCREEN}
         component={Trip}
         options={tabTripOption}
+      />
+      <Tab.Screen
+        name={NAVIGATE_TO_HOME_SCREEN}
+        component={Home}
+        options={tabHomeOption}
       />
       <Tab.Screen
         name={NAVIGATE_TO_NOTIFICATION_SCREEN}

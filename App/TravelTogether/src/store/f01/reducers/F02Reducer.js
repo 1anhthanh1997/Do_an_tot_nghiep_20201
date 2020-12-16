@@ -29,7 +29,7 @@ const initUserInfo = {
   },
   getAllTrip: {
     status: STATUS.DEFAULT,
-    getAllTripResultData: {},
+    getAllTripResultData: [],
     errorCode: '',
     errorMessage: '',
   },

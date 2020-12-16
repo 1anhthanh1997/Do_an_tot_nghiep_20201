@@ -25,8 +25,6 @@ import {Dialog} from '../../../commons';
 import {connect} from 'react-redux';
 import {login} from '../../../store/f01/actions';
 
-const loginUrl = '/users/login';
-
 const Login = ({navigation, login: _login, loginData}) => {
   const [username, setUserName] = useState(null);
   const [password, setPassword] = useState(null);
@@ -86,7 +84,7 @@ const Login = ({navigation, login: _login, loginData}) => {
   }, [loginData]);
 
   const onPressRegister = () => {
-    navigateToScreen(NAVIGATE_TO_REGISTER_SCREEN);
+    navigateToScreen(NAVIGATE_TO_REGISTER_SCREEN, {test: 1});
   };
 
   const onPressResetPassword = () => {

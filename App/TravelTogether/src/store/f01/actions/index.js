@@ -36,10 +36,9 @@ const changePassword = (data) => {
   };
 };
 
-const getAllTrip = (data) => {
+const getAllTrip = () => {
   return {
     type: GET_ALL_TRIP,
-    payload: data,
   };
 };
 
