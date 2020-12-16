@@ -16,6 +16,7 @@ import {
   NAVIGATE_TO_CHANGE_PASSWORD,
   NAVIGATE_TO_CREATE_TRIP,
   NAVIGATE_TO_TRIP_DETAIL,
+  NAVIGATE_TO_EDIT_TRIP,
 } from './routers';
 import {
   Login,
@@ -29,6 +30,7 @@ import {
   Personal,
   PersonalInformation,
   ChangePassword,
+  EditTrip,
 } from '../screens';
 import {COLOR} from '../constants';
 
@@ -57,6 +59,14 @@ const changePasswordOption = {
 
 const createTripOption = {
   headerTitle: 'Tạo chuyến đi',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
+};
+
+const editTripOption = {
+  headerTitle: 'Chỉnh sửa chuyến đi',
   headerStyle: {
     backgroundColor: COLOR.blue,
   },
@@ -166,6 +176,11 @@ const RootNavigator = () => {
           name={NAVIGATE_TO_TRIP_DETAIL}
           component={TripDetail}
           options={tripDetailOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_EDIT_TRIP}
+          component={EditTrip}
+          options={editTripOption}
         />
       </Stack.Navigator>
     </NavigationContainer>

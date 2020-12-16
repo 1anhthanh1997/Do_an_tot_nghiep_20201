@@ -13,6 +13,7 @@ import tripDetailStyles from './TripDetailStyles';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import {COLOR} from '../../../constants';
 import Geolocation from '@react-native-community/geolocation';
+import {NAVIGATE_TO_EDIT_TRIP} from '../../../navigations/routers';
 
 const placeData = [
   {
@@ -50,7 +51,6 @@ const TripDetail = ({route, navigation}) => {
   const [position, setPosition] = useState(initPosition);
 
   useEffect(() => {
-    console.log(trip);
     Geolocation.getCurrentPosition(
       (position) => {
         setPosition(position);
@@ -61,7 +61,7 @@ const TripDetail = ({route, navigation}) => {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
-  });
+  }, []);
 
   const renderPlaceItem = ({item}) => {
     return (
@@ -102,7 +102,11 @@ const TripDetail = ({route, navigation}) => {
             {trip.groupDescription}
           </Text>
           <View style={tripDetailStyles.optionView}>
-            <TouchableOpacity style={tripDetailStyles.optionItemView}>
+            <TouchableOpacity
+              style={tripDetailStyles.optionItemView}
+              onPress={() =>
+                navigation.navigate(NAVIGATE_TO_EDIT_TRIP, {trip: trip})
+              }>
               <MaterialCommunityIcons
                 name={'pencil'}
                 size={25}

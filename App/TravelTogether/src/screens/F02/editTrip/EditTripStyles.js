@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {COLOR} from '../../../constants';
 
-const createTripStyles = StyleSheet.create({
+const editTripStyles = StyleSheet.create({
   screenView: {
     flex: 1,
   },
@@ -63,4 +63,4 @@ const createTripStyles = StyleSheet.create({
     color: COLOR.white,
   },
 });
-export default createTripStyles;
+export default editTripStyles;

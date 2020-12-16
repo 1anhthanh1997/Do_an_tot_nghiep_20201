@@ -9,6 +9,7 @@ import PersonalInformation from './F02/personalInformation/PersonalInformation';
 import ChangePassword from './F02/changePassword/ChangePassword';
 import CreateTrip from './F02/createTrip/CreateTrip';
 import TripDetail from './F02/tripDetail/TripDetail';
+import EditTrip from './F02/editTrip/EditTrip';
 
 export {
   Login,
@@ -19,6 +20,7 @@ export {
   Personal,
   Trip,
   CreateTrip,
+  EditTrip,
   TripDetail,
   PersonalInformation,
   ChangePassword,
