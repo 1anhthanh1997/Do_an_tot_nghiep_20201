@@ -13,7 +13,19 @@ import {
   CHANGE_PERSONAL_INFORMATION_FAIL,
   CHANGE_PASSWORD_LOADING,
   CHANGE_PASSWORD_SUCCESS,
-  CHANGE_PASSWORD, CHANGE_PASSWORD_FAIL,
+  CHANGE_PASSWORD,
+  CHANGE_PASSWORD_FAIL,
+  GET_ALL_TRIP,
+  GET_ALL_TRIP_SUCCESS,
+  GET_ALL_TRIP_FAIL,
+  CREATE_TRIP,
+  CREATE_TRIP_LOADING,
+  CREATE_TRIP_SUCCESS,
+  CREATE_TRIP_FAIL,
+  EDIT_TRIP_LOADING,
+  EDIT_TRIP_SUCCESS,
+  EDIT_TRIP_FAIL,
+  EDIT_TRIP,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -113,9 +125,66 @@ function* changePassword(data) {
   }
 }
 
+function* getAllTrip() {
+  try {
+    yield put({type: GET_ALL_TRIP, payload: ''});
+    const res = yield Api.callGetAllTrip();
+    console.log(res);
+    yield put({type: GET_ALL_TRIP_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: GET_ALL_TRIP_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
+function* createTrip(trip) {
+  try {
+    yield put({type: CREATE_TRIP_LOADING, payload: ''});
+    const res = yield Api.callCreateTrip(trip);
+    console.log(res);
+    yield put({type: CREATE_TRIP_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: CREATE_TRIP_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
+function* editTrip(tripId, newTrip) {
+  try {
+    yield put({type: EDIT_TRIP_LOADING, payload: ''});
+    const res = yield Api.callEditTrip(tripId, newTrip);
+    console.log(res);
+    yield put({type: EDIT_TRIP_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: EDIT_TRIP_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
   yield takeLatest(CHANGE_PERSONAL_INFORMATION, changePersonalInformation);
   yield takeLatest(CHANGE_PASSWORD, changePassword);
+  yield takeLatest(GET_ALL_TRIP, getAllTrip);
+  yield takeLatest(CREATE_TRIP, createTrip);
+  yield takeLatest(EDIT_TRIP, editTrip);
 }

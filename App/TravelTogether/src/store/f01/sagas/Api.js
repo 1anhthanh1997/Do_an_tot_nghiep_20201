@@ -51,7 +51,7 @@ function* callGetAllTrip() {
   return responseData;
 }
 
-function* createTrip(trip) {
+function* callCreateTrip(trip) {
   const response = yield postApi(postApiUrl, trip);
   const responseData = yield response.status === 200 || response.status === 201
     ? response.data
@@ -59,7 +59,7 @@ function* createTrip(trip) {
   return responseData;
 }
 
-function* editTrip(tripId, newTrip) {
+function* callEditTrip(tripId, newTrip) {
   const response = yield secondPatchApi(postApiUrl, tripId, newTrip);
   const responseData = yield response.status === 200 || response.status === 201
     ? response.data
@@ -73,6 +73,6 @@ export const Api = {
   callChangePersonalInformation,
   callChangePassword,
   callGetAllTrip,
-  createTrip,
-  editTrip,
+  callCreateTrip,
+  callEditTrip,
 };
