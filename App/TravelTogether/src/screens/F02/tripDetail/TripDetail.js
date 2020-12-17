@@ -141,7 +141,9 @@ const TripDetail = ({route, navigation}) => {
             <TouchableOpacity
               style={tripDetailStyles.optionItemView}
               onPress={() => {
-                Linking.openURL('sms:?body=Mã nhóm của bạn là :0123456');
+                Linking.openURL(
+                  `sms:?body=Mã nhóm của bạn là: ${trip.groupId}`,
+                );
               }}>
               <MaterialCommunityIcons
                 name={'account-plus'}
