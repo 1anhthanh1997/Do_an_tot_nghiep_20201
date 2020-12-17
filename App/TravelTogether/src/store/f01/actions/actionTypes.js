@@ -37,3 +37,8 @@ export const EDIT_TRIP = 'EDIT_TRIP';
 export const EDIT_TRIP_SUCCESS = 'EDIT_TRIP_SUCCESS';
 export const EDIT_TRIP_LOADING = 'EDIT_TRIP_LOADING';
 export const EDIT_TRIP_FAIL = 'EDIT_TRIP_FAIL';
+
+export const JOIN_TRIP = 'JOIN_TRIP';
+export const JOIN_TRIP_SUCCESS = 'JOIN_TRIP_SUCCESS';
+export const JOIN_TRIP_LOADING = 'JOIN_TRIP_LOADING';
+export const JOIN_TRIP_FAIL = 'JOIN_TRIP_FAIL';

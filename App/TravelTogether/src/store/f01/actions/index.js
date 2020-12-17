@@ -6,6 +6,7 @@ import {
   GET_ALL_TRIP,
   CREATE_TRIP,
   EDIT_TRIP,
+  JOIN_TRIP,
 } from './actionTypes';
 
 const login = (data) => {
@@ -56,6 +57,13 @@ const editTrip = (data) => {
   };
 };
 
+const joinTrip = (data) => {
+  return {
+    type: JOIN_TRIP,
+    payload: data,
+  };
+};
+
 export {
   login,
   register,
@@ -64,4 +72,5 @@ export {
   getAllTrip,
   createTrip,
   editTrip,
+  joinTrip,
 };

@@ -15,6 +15,8 @@ import {
   EDIT_TRIP_SUCCESS,
   EDIT_TRIP_LOADING,
   EDIT_TRIP_FAIL,
+  JOIN_TRIP_LOADING,
+  JOIN_TRIP_FAIL, JOIN_TRIP_SUCCESS,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -47,6 +49,12 @@ const initUserInfo = {
   editTrip: {
     status: STATUS.DEFAULT,
     editTripResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  joinTrip: {
+    status: STATUS.DEFAULT,
+    joinTripResultData: {},
     errorCode: '',
     errorMessage: '',
   },
@@ -170,6 +178,30 @@ const f02Reducer = (info = initUserInfo, action) => {
       return {
         ...info,
         editTrip: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case JOIN_TRIP_SUCCESS:
+      return {
+        ...info,
+        joinTrip: {
+          status: STATUS.SUCCESS,
+          joinTripResultData: action.payload,
+        },
+      };
+    case JOIN_TRIP_LOADING:
+      return {
+        ...info,
+        joinTrip: {
+          status: STATUS.LOADING,
+        },
+      };
+    case JOIN_TRIP_FAIL:
+      return {
+        ...info,
+        joinTrip: {
           status: STATUS.ERROR,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage,

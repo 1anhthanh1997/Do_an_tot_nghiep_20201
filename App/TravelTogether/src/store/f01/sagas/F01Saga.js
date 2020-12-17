@@ -27,12 +27,14 @@ import {
   EDIT_TRIP_FAIL,
   EDIT_TRIP,
   GET_ALL_TRIP_LOADING,
+  JOIN_TRIP, JOIN_TRIP_LOADING, JOIN_TRIP_SUCCESS, JOIN_TRIP_FAIL,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
 //Saga effects
 import {put, takeLatest} from 'redux-saga/effects';
 import {Api} from './Api';
+
 
 function* login(data) {
   try {
@@ -184,6 +186,25 @@ function* editTrip(newTrip) {
   }
 }
 
+function* joinTrip(trip) {
+  try {
+    yield put({type: JOIN_TRIP_LOADING, payload: ''});
+    console.log(trip.payload);
+    const res = yield Api.callJoinTrip(trip.payload);
+    console.log(res);
+    yield put({type: JOIN_TRIP_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: JOIN_TRIP_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
@@ -192,4 +213,5 @@ export function* watchLogin() {
   yield takeLatest(GET_ALL_TRIP, getAllTrip);
   yield takeLatest(CREATE_TRIP, createTrip);
   yield takeLatest(EDIT_TRIP, editTrip);
+  yield takeLatest(JOIN_TRIP, joinTrip);
 }

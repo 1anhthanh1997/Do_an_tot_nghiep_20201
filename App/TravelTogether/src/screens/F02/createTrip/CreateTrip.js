@@ -75,8 +75,8 @@ const CreateTrip = ({
       _getAllTrip();
     }
     if (createTripData.status === STATUS.ERROR) {
-      setErrorCode(getAllTripData.errorCode);
-      setMessage(getAllTripData.errorMessage);
+      setErrorCode(createTripData.errorCode);
+      setMessage(createTripData.errorMessage);
       setIsDisplayDialog(true);
     }
   }, [createTripData]);

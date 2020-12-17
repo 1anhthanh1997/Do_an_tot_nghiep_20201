@@ -4,6 +4,7 @@ import {
   userPostApi,
   patchApi,
   secondPatchApi,
+  thirdPatchApi,
 } from '../../../api';
 const loginUrl = '/users/login';
 const registerUrl = '/users';
@@ -12,6 +13,7 @@ const changePasswordUrl = '/users/changePass';
 const getAllTripUrl = '/tripList';
 const postTripUrl = '/trip';
 const editTripUrl = '/editTrip/';
+const joinTripUrl = '/joinTrip/';
 
 function* callLogin(data) {
   console.log('Call');
@@ -74,6 +76,14 @@ function* callEditTrip(tripId, newTrip) {
   return responseData;
 }
 
+function* callJoinTrip(tripId) {
+  const response = yield thirdPatchApi(joinTripUrl, tripId);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
 export const Api = {
   callLogin,
   callRegister,
@@ -82,4 +92,5 @@ export const Api = {
   callGetAllTrip,
   callCreateTrip,
   callEditTrip,
+  callJoinTrip,
 };
