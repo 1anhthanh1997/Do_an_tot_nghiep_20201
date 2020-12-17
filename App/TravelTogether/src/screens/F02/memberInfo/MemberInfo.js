@@ -24,10 +24,12 @@ import LoadingView from '../../../commons/loadingView/LoadingView';
 
 const MemberInfo = ({
   navigation,
+  route,
   loginData,
   changePersonalInformationData,
   changePersonalInformation: _changePersonalInformation,
 }) => {
+  const {info} = route.params;
   const options = {
     title: 'Select Avatar',
     customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
@@ -49,9 +51,9 @@ const MemberInfo = ({
   ];
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
   const [valueData, setValueData] = useState([
-    loginData.loginResultData.name,
-    loginData.loginResultData.email,
-    loginData.loginResultData.phoneNumber,
+    info.name,
+    info.email,
+    info.phoneNumber,
   ]);
   const [avatarSource, setAvatarSource] = useState('');
   const [errCode, setErrorCode] = useState('');
@@ -59,6 +61,7 @@ const MemberInfo = ({
   const [isFirstLogin, setIsFirstLogin] = useState(true);
 
   useEffect(() => {
+    console.log(info);
     if (isFirstLogin) {
       setIsFirstLogin(false);
       return;
@@ -104,21 +107,6 @@ const MemberInfo = ({
         setAvatarSource(source);
       }
     });
-  };
-
-  const onPressUpdate = () => {
-    let data = {
-      name: valueData[0],
-      email: valueData[1],
-      phoneNumber: valueData[2],
-    };
-    _changePersonalInformation(data);
-  };
-
-  const onChangeInfo = (value, index) => {
-    let tmpArr = [...valueData];
-    tmpArr[index] = value;
-    setValueData(tmpArr);
   };
 
   const renderPersonalInformationItem = ({item, index}) => {
