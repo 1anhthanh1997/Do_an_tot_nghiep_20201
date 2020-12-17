@@ -9,7 +9,12 @@ import {
   GET_ALL_TRIP_LOADING,
   GET_ALL_TRIP_FAIL,
   CREATE_TRIP_SUCCESS,
-  CREATE_TRIP_LOADING, CREATE_TRIP_FAIL, EDIT_TRIP, EDIT_TRIP_SUCCESS, EDIT_TRIP_LOADING, EDIT_TRIP_FAIL,
+  CREATE_TRIP_LOADING,
+  CREATE_TRIP_FAIL,
+  EDIT_TRIP,
+  EDIT_TRIP_SUCCESS,
+  EDIT_TRIP_LOADING,
+  EDIT_TRIP_FAIL,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -110,6 +115,7 @@ const f02Reducer = (info = initUserInfo, action) => {
         ...info,
         getAllTrip: {
           status: STATUS.LOADING,
+          getAllTripResultData: [],
         },
       };
     case GET_ALL_TRIP_FAIL:

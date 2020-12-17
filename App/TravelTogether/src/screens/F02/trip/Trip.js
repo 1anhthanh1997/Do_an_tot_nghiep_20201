@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {COLOR, STATUS} from '../../../constants';
 import {
   NAVIGATE_TO_CREATE_TRIP,
+  NAVIGATE_TO_JOIN_TRIP,
   NAVIGATE_TO_TRIP_DETAIL,
 } from '../../../navigations/routers';
 import {connect} from 'react-redux';
@@ -43,6 +44,10 @@ const Trip = ({navigation, getAllTripData, getAllTrip: _getAllTrip}) => {
     redirectToScreen(NAVIGATE_TO_CREATE_TRIP);
   };
 
+  const onPressSecondFloatButton = () => {
+    redirectToScreen(NAVIGATE_TO_JOIN_TRIP);
+  };
+
   const renderTripList = ({item}) => {
     return (
       <TouchableOpacity
@@ -74,13 +79,24 @@ const Trip = ({navigation, getAllTripData, getAllTrip: _getAllTrip}) => {
   };
 
   const renderBody = () => {
+    console.log(!getAllTripData.getAllTripResultData);
+    if (getAllTripData.getAllTripResultData.length !== 0) {
+      return (
+        <View style={tripStyles.bodyView}>
+          <FlatList
+            data={getAllTripData.getAllTripResultData}
+            renderItem={renderTripList}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+      );
+    }
     return (
-      <View style={tripStyles.bodyView}>
-        <FlatList
-          data={getAllTripData.getAllTripResultData}
-          renderItem={renderTripList}
-          keyExtractor={(item, index) => index.toString()}
-        />
+      <View style={tripStyles.bodyNullView}>
+        <Text style={tripStyles.bodyNullText}>
+          Hiện không có chuyến đi nào. Hãy tạo một nhóm hoặc tìm kiếm và tham
+          gia vào 1 nhóm
+        </Text>
       </View>
     );
   };
@@ -95,11 +111,26 @@ const Trip = ({navigation, getAllTripData, getAllTrip: _getAllTrip}) => {
     );
   };
 
+  const renderSecondFloatButton = () => {
+    return (
+      <TouchableOpacity
+        style={tripStyles.secondFloatButton}
+        onPress={onPressSecondFloatButton}>
+        <MaterialCommunityIcons
+          name={'account-plus'}
+          color={COLOR.white}
+          size={25}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={tripStyles.screenView}>
       <LoadingView visible={getAllTripData.status === STATUS.LOADING} />
       {renderHeader()}
       {renderBody()}
+      {renderSecondFloatButton()}
       {renderFloatButton()}
     </View>
   );

@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   Image,
+  Linking,
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
@@ -14,7 +15,10 @@ import tripDetailStyles from './TripDetailStyles';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import {COLOR} from '../../../constants';
 import Geolocation from '@react-native-community/geolocation';
-import {NAVIGATE_TO_EDIT_TRIP} from '../../../navigations/routers';
+import {
+  NAVIGATE_TO_ARRANGE_PLACE,
+  NAVIGATE_TO_EDIT_TRIP,
+} from '../../../navigations/routers';
 
 const placeData = [
   {
@@ -122,7 +126,11 @@ const TripDetail = ({route, navigation}) => {
               />
               <Text>Chỉnh sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={tripDetailStyles.optionItemView}>
+            <TouchableOpacity
+              style={tripDetailStyles.optionItemView}
+              onPress={() =>
+                navigation.navigate(NAVIGATE_TO_ARRANGE_PLACE, {trip: trip})
+              }>
               <MaterialCommunityIcons
                 name={'order-bool-descending'}
                 size={25}
@@ -130,7 +138,11 @@ const TripDetail = ({route, navigation}) => {
               />
               <Text>Sắp xếp</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={tripDetailStyles.optionItemView}>
+            <TouchableOpacity
+              style={tripDetailStyles.optionItemView}
+              onPress={() => {
+                Linking.openURL('sms:?body=Mã nhóm của bạn là :0123456');
+              }}>
               <MaterialCommunityIcons
                 name={'account-plus'}
                 size={25}

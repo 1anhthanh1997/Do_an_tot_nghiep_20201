@@ -136,4 +136,25 @@ exports.editTrip = async (req, res) => {
     }
 }
 
+exports.joinTrip = async (req, res) => {
+    try {
+        let chooseGroup = await Group.findOne({groupId: req.params.groupId})
+        let flag = true
+        chooseGroup.members.map((item) => {
+            if (item === req.user.username) {
+                flag = false
+            }
+        })
+        if (flag) {
+            chooseGroup.members.push(req.user.username)
+        }
+        chooseGroup.save()
+        res.status(200).send(chooseGroup)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+
 

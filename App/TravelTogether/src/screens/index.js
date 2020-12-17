@@ -10,6 +10,8 @@ import ChangePassword from './F02/changePassword/ChangePassword';
 import CreateTrip from './F02/createTrip/CreateTrip';
 import TripDetail from './F02/tripDetail/TripDetail';
 import EditTrip from './F02/editTrip/EditTrip';
+import ArrangePlace from './F02/arrangePlace/ArrangePlace';
+import JoinTrip from './F02/joinTrip/JoinTrip';
 
 export {
   Login,
@@ -21,7 +23,9 @@ export {
   Trip,
   CreateTrip,
   EditTrip,
+  ArrangePlace,
   TripDetail,
+  JoinTrip,
   PersonalInformation,
   ChangePassword,
 };
