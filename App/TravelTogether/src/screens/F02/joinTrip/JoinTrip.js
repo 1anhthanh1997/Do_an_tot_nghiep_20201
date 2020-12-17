@@ -8,6 +8,8 @@ import {
   Keyboard,
 } from 'react-native';
 import joinTripStyles from './JoinTripStyles';
+import {COLOR} from '../../../constants';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const JoinTrip = () => {
   const [groupCode, setGroupCode] = useState('');
@@ -15,6 +17,11 @@ const JoinTrip = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={joinTripStyles.screenView}>
+        <MaterialCommunityIcons
+          name={'account-multiple-plus'}
+          color={COLOR.blue}
+          size={75}
+        />
         <Text style={joinTripStyles.joinTripText}>
           Tham gia nhóm bằng cách nhập code
         </Text>

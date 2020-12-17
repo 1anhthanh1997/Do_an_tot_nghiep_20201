@@ -4,9 +4,9 @@ import {COLOR} from '../../../constants';
 const joinTripStyles = StyleSheet.create({
   screenView: {
     flex: 1,
+    paddingTop: 50,
     paddingLeft: 10,
     paddingRight: 10,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   textInput: {
@@ -20,6 +20,7 @@ const joinTripStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
+    marginTop: 50,
   },
   joinTripButton: {
     width: '50%',
