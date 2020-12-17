@@ -117,7 +117,7 @@ const Trip = ({navigation, getAllTripData, getAllTrip: _getAllTrip}) => {
         style={tripStyles.secondFloatButton}
         onPress={onPressSecondFloatButton}>
         <MaterialCommunityIcons
-          name={'account-plus'}
+          name={'account-multiple-plus'}
           color={COLOR.white}
           size={25}
         />
