@@ -12,6 +12,8 @@ import TripDetail from './F02/tripDetail/TripDetail';
 import EditTrip from './F02/editTrip/EditTrip';
 import ArrangePlace from './F02/arrangePlace/ArrangePlace';
 import JoinTrip from './F02/joinTrip/JoinTrip';
+import TripMember from './F02/tripMember/TripMember';
+import MemberInfo from './F02/memberInfo/MemberInfo';
 
 export {
   Login,
@@ -28,4 +30,6 @@ export {
   JoinTrip,
   PersonalInformation,
   ChangePassword,
+  TripMember,
+  MemberInfo,
 };

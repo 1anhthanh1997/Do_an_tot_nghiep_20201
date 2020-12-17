@@ -90,7 +90,7 @@ exports.getTripList = async (req, res) => {
                response.push(trip)
            }
            else{
-               await trip.map((member)=>{
+               await trip.members.map((member)=>{
                    if(member===req.user.username){
                        response.push(trip)
                    }
@@ -139,7 +139,8 @@ exports.editTrip = async (req, res) => {
 exports.joinTrip = async (req, res) => {
     try {
         let chooseGroup = await Group.findOne({groupId: req.params.groupId})
-        let flag = true
+        let flag = true;
+        console.log(chooseGroup.members)
         await chooseGroup.members.map((item) => {
             if (item === req.user.username) {
                 flag = false

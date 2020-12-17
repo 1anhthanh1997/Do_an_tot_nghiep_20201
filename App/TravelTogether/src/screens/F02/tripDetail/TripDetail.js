@@ -18,6 +18,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {
   NAVIGATE_TO_ARRANGE_PLACE,
   NAVIGATE_TO_EDIT_TRIP,
+  NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
 
 const placeData = [
@@ -137,6 +138,20 @@ const TripDetail = ({route, navigation}) => {
                 color={COLOR.black}
               />
               <Text>Sắp xếp</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tripDetailStyles.optionItemView}
+              onPress={() =>
+                navigation.navigate(NAVIGATE_TO_TRIP_MEMBER, {
+                  members: trip.members,
+                })
+              }>
+              <MaterialCommunityIcons
+                name={'account-multiple'}
+                size={25}
+                color={COLOR.black}
+              />
+              <Text>Thành viên</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={tripDetailStyles.optionItemView}

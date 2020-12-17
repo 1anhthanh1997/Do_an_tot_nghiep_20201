@@ -19,6 +19,8 @@ import {
   NAVIGATE_TO_EDIT_TRIP,
   NAVIGATE_TO_ARRANGE_PLACE,
   NAVIGATE_TO_JOIN_TRIP,
+  NAVIGATE_TO_TRIP_MEMBER,
+  NAVIGATE_TO_MEMBER_INFO,
 } from './routers';
 import {
   Login,
@@ -35,6 +37,8 @@ import {
   EditTrip,
   ArrangePlace,
   JoinTrip,
+  TripMember,
+  MemberInfo,
 } from '../screens';
 import {COLOR} from '../constants';
 
@@ -91,6 +95,23 @@ const joinTripOption = {
     backgroundColor: COLOR.blue,
   },
   headerTintColor: COLOR.white,
+};
+
+const tripMemberOption = {
+  headerTitle: 'Danh sách thành viên',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
+};
+
+const memberInfoOption = {
+  headerShown: false,
+  // headerTitle: 'Thông tin thành viên',
+  // headerStyle: {
+  //   backgroundColor: COLOR.blue,
+  // },
+  // headerTintColor: COLOR.white,
 };
 
 const tripDetailOption = {
@@ -211,6 +232,16 @@ const RootNavigator = () => {
           name={NAVIGATE_TO_JOIN_TRIP}
           component={JoinTrip}
           options={joinTripOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_TRIP_MEMBER}
+          component={TripMember}
+          options={tripMemberOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_MEMBER_INFO}
+          component={MemberInfo}
+          options={memberInfoOption}
         />
       </Stack.Navigator>
     </NavigationContainer>

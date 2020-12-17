@@ -50,7 +50,7 @@ const tripDetailStyles = StyleSheet.create({
     paddingBottom: 10,
   },
   optionItemView: {
-    width: '33.33%',
+    width: '25%',
     // backgroundColor: COLOR.gray,
     alignItems: 'center',
   },
