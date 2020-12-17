@@ -27,14 +27,21 @@ import {
   EDIT_TRIP_FAIL,
   EDIT_TRIP,
   GET_ALL_TRIP_LOADING,
-  JOIN_TRIP, JOIN_TRIP_LOADING, JOIN_TRIP_SUCCESS, JOIN_TRIP_FAIL,
+  JOIN_TRIP,
+  JOIN_TRIP_LOADING,
+  JOIN_TRIP_SUCCESS,
+  JOIN_TRIP_FAIL,
+  GET_MEMBER_INFO_LOADING,
+  GET_MEMBER_INFO_SUCCESS,
+  GET_MEMBER_INFO_FAIL,
+  GET_MEMBER_INFO,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
 //Saga effects
 import {put, takeLatest} from 'redux-saga/effects';
 import {Api} from './Api';
-
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 function* login(data) {
   try {
@@ -205,6 +212,25 @@ function* joinTrip(trip) {
   }
 }
 
+function* getMemberInfo(user) {
+  try {
+    yield put({type: GET_MEMBER_INFO_LOADING, payload: ''});
+    console.log(user.payload);
+    const res = yield Api.callGetMemberInfo(user.payload);
+    console.log(res);
+    yield put({type: GET_MEMBER_INFO_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: GET_MEMBER_INFO_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
@@ -214,4 +240,5 @@ export function* watchLogin() {
   yield takeLatest(CREATE_TRIP, createTrip);
   yield takeLatest(EDIT_TRIP, editTrip);
   yield takeLatest(JOIN_TRIP, joinTrip);
+  yield takeLatest(GET_MEMBER_INFO, getMemberInfo);
 }

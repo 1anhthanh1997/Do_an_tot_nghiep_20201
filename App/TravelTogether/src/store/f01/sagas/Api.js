@@ -84,6 +84,14 @@ function* callJoinTrip(tripId) {
   return responseData;
 }
 
+function* callGetMemberInfo(username) {
+  const response = yield thirdPatchApi(joinTripUrl, username);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
 export const Api = {
   callLogin,
   callRegister,
@@ -93,4 +101,5 @@ export const Api = {
   callCreateTrip,
   callEditTrip,
   callJoinTrip,
+  callGetMemberInfo,
 };

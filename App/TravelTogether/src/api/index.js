@@ -19,6 +19,20 @@ const getApi = async (lastUrl) => {
   return response;
 };
 
+const secondGetApi = async (lastUrl, id) => {
+  const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+  // await console.log(token);
+  // await console.log(baseUrl + lastUrl);
+  const response = await axios({
+    method: 'get',
+    url: baseUrl + lastUrl + id,
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response;
+};
+
 const postApi = async (lastUrl, data) => {
   console.log(data);
   const response = await axios({
@@ -105,4 +119,12 @@ const thirdPatchApi = async (lastUrl, id) => {
   return response;
 };
 
-export {getApi, postApi, userPostApi, patchApi, secondPatchApi,thirdPatchApi};
+export {
+  getApi,
+  secondGetApi,
+  postApi,
+  userPostApi,
+  patchApi,
+  secondPatchApi,
+  thirdPatchApi,
+};
