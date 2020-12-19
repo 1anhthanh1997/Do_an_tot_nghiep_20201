@@ -37,6 +37,18 @@ const tripDetailStyles = StyleSheet.create({
   },
   tripDescription: {
     marginTop: 10,
+    fontSize: 16,
+    // fontWeight: 'bold',
+    color: COLOR.black,
+  },
+  tripStartTime: {
+    marginTop: 10,
+    fontSize: 16,
+    // fontWeight: 'bold',
+    color: COLOR.black,
+  },
+  tripEndTime: {
+    marginTop: 10,
     marginBottom: 40,
     fontSize: 16,
     // fontWeight: 'bold',
@@ -56,7 +68,7 @@ const tripDetailStyles = StyleSheet.create({
   },
   placeItemView: {
     width: '100%',
-    height: 300,
+    height: 350,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLOR.stone,
@@ -65,7 +77,7 @@ const tripDetailStyles = StyleSheet.create({
   scrollView: {
     paddingLeft: 5,
     paddingRight: 5,
-    marginBottom: 100
+    marginBottom: 100,
   },
   placeImage: {
     width: '100%',
@@ -86,6 +98,18 @@ const tripDetailStyles = StyleSheet.create({
   location: {
     fontSize: 14,
     color: COLOR.black,
+    marginTop: 5,
+  },
+  floatButton: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: COLOR.blue,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 40,
+    right: 25,
   },
 });
 

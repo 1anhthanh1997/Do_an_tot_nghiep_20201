@@ -17,22 +17,36 @@ import {COLOR} from '../../../constants';
 import Geolocation from '@react-native-community/geolocation';
 import {
   NAVIGATE_TO_ARRANGE_PLACE,
+  NAVIGATE_TO_CREATE_TRIP,
   NAVIGATE_TO_EDIT_TRIP,
   NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
+import tripStyles from '../trip/TripStyles';
 
 const placeData = [
   {
     name: 'Đền Trần',
     location: 'Tỉnh Nam Định',
+    gatheringPlace: 'Ở trước cổng đền',
+    date: '18/12/2020',
+    arriveTime: '8:00',
+    leavingTime: '12:00',
   },
   {
     name: 'Hồ Gươm',
     location: 'Thành phố Hà Nội',
+    gatheringPlace: 'Ở trước đền Ngọc Sơn',
+    date: '18/12/2020',
+    arriveTime: '8:00',
+    leavingTime: '12:00',
   },
   {
     name: 'Thác Bản Giốc',
     location: 'Tỉnh Cao Bằng',
+    gatheringPlace: 'Ở trước lối vào thác',
+    date: '18/12/2020',
+    arriveTime: '8:00',
+    leavingTime: '12:00',
   },
 ];
 
@@ -57,6 +71,7 @@ const TripDetail = ({route, navigation}) => {
   const [position, setPosition] = useState(initPosition);
 
   useEffect(() => {
+    console.log(trip.startDate);
     Geolocation.getCurrentPosition(
       (position) => {
         setPosition(position);
@@ -69,6 +84,14 @@ const TripDetail = ({route, navigation}) => {
     );
   }, []);
 
+  const redirectToScreen = (name, params) => {
+    navigation.navigate(name, params);
+  };
+
+  const onPressFloatButton = () => {
+    redirectToScreen(NAVIGATE_TO_CREATE_TRIP);
+  };
+
   const renderPlaceItem = ({item}) => {
     return (
       <TouchableOpacity style={tripDetailStyles.placeItemView}>
@@ -77,14 +100,32 @@ const TripDetail = ({route, navigation}) => {
           <Text style={tripDetailStyles.name}>{item.name}</Text>
           <Text style={tripDetailStyles.location}>{item.location}</Text>
           <Text style={tripDetailStyles.location}>
-            Địa điểm tập trung: Ở đầu
+            {'Địa điểm tập trung: ' + item.gatheringPlace}
           </Text>
-          <Text style={tripDetailStyles.location}>Thời gian đến: 8:00</Text>
-          <Text style={tripDetailStyles.location}>Thời gian đi: 12:00</Text>
+          <Text style={tripDetailStyles.location}>
+            {'Ngày đến: ' + item.date}
+          </Text>
+          <Text style={tripDetailStyles.location}>
+            {'Thời gian đến: ' + item.arriveTime}
+          </Text>
+          <Text style={tripDetailStyles.location}>
+            {'Thời gian đi: ' + item.leavingTime}
+          </Text>
         </View>
       </TouchableOpacity>
     );
   };
+
+  const renderFloatButton = () => {
+    return (
+      <TouchableOpacity
+        style={tripDetailStyles.floatButton}
+        onPress={onPressFloatButton}>
+        <MaterialCommunityIcons name={'plus'} color={COLOR.white} size={25} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={tripDetailStyles.container}>
       <MapView
@@ -113,6 +154,22 @@ const TripDetail = ({route, navigation}) => {
           <Text style={tripDetailStyles.tripName}>{trip.groupName}</Text>
           <Text style={tripDetailStyles.tripDescription}>
             {trip.groupDescription}
+          </Text>
+          <Text style={tripDetailStyles.tripStartTime}>
+            {'Ngày bắt đầu: ' +
+              new Date(trip.startDate).getDate() +
+              '/' +
+              (new Date(trip.startDate).getMonth() + 1) +
+              '/' +
+              new Date(trip.startDate).getFullYear()}
+          </Text>
+          <Text style={tripDetailStyles.tripEndTime}>
+            {'Ngày kết thúc: ' +
+              new Date(trip.endDate).getDate() +
+              '/' +
+              (new Date(trip.endDate).getMonth() + 1) +
+              '/' +
+              new Date(trip.endDate).getFullYear()}
           </Text>
           <View style={tripDetailStyles.optionView}>
             <TouchableOpacity
@@ -177,6 +234,7 @@ const TripDetail = ({route, navigation}) => {
           </ScrollView>
         </View>
       </SlidingUpPanel>
+      {renderFloatButton()}
     </View>
   );
 };
