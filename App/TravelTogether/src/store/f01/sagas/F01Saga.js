@@ -35,6 +35,10 @@ import {
   GET_MEMBER_INFO_SUCCESS,
   GET_MEMBER_INFO_FAIL,
   GET_MEMBER_INFO,
+  ADD_DESTINATION_LOADING,
+  ADD_DESTINATION_SUCCESS,
+  ADD_DESTINATION_FAIL,
+  ADD_DESTINATION,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -231,6 +235,26 @@ function* getMemberInfo(user) {
   }
 }
 
+function* addDestination(destination) {
+  try {
+    yield put({type: ADD_DESTINATION_LOADING, payload: ''});
+    console.log(destination.payload);
+    const res = yield Api.callAddDestination(destination.payload);
+    console.log('Hello');
+    console.log(res);
+    yield put({type: ADD_DESTINATION_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: ADD_DESTINATION_FAIL,
+      payload: {
+        errorCode: 'EC0004',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
@@ -241,4 +265,5 @@ export function* watchLogin() {
   yield takeLatest(EDIT_TRIP, editTrip);
   yield takeLatest(JOIN_TRIP, joinTrip);
   yield takeLatest(GET_MEMBER_INFO, getMemberInfo);
+  yield takeLatest(ADD_DESTINATION, addDestination);
 }

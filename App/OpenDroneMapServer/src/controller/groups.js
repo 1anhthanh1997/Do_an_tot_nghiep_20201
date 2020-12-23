@@ -157,6 +157,28 @@ exports.joinTrip = async (req, res) => {
     }
 }
 
+exports.addDestination = async (req, res) => {
+    try {
+        console.log(req.params.groupId)
+        let chosenGroup = await Group.findOne({groupId: req.params.groupId})
+        let destination = req.body
+        delete destination.groupId
+        let flag = true
+        await chosenGroup.schedule.map((item) => {
+            if (item.destinationId === destination.destinationId) {
+                flag=false
+            }
+        })
+        if(flag){
+            await chosenGroup.schedule.push(destination)
+        }
+        await chosenGroup.save()
+        res.send(chosenGroup)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 
 
 

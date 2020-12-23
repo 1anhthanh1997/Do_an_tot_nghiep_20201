@@ -14,6 +14,8 @@ import ArrangePlace from './F02/arrangePlace/ArrangePlace';
 import JoinTrip from './F02/joinTrip/JoinTrip';
 import TripMember from './F02/tripMember/TripMember';
 import MemberInfo from './F02/memberInfo/MemberInfo';
+import AddDestination from './F02/addDestination/AddDestination';
+import DestinationDetail from './F02/destinationDetail/DestinationDetail';
 
 export {
   Login,
@@ -32,4 +34,6 @@ export {
   ChangePassword,
   TripMember,
   MemberInfo,
+  AddDestination,
+  DestinationDetail,
 };

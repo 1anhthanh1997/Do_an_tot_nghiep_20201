@@ -16,12 +16,14 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import {COLOR} from '../../../constants';
 import Geolocation from '@react-native-community/geolocation';
 import {
+  NAVIGATE_TO_ADD_DESTINATION,
   NAVIGATE_TO_ARRANGE_PLACE,
   NAVIGATE_TO_CREATE_TRIP,
+  NAVIGATE_TO_DESTINATION_DETAIL,
   NAVIGATE_TO_EDIT_TRIP,
   NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
-import tripStyles from '../trip/TripStyles';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 const placeData = [
   {
@@ -89,28 +91,36 @@ const TripDetail = ({route, navigation}) => {
   };
 
   const onPressFloatButton = () => {
-    redirectToScreen(NAVIGATE_TO_CREATE_TRIP);
+    redirectToScreen(NAVIGATE_TO_ADD_DESTINATION, {tripId: trip.groupId});
   };
 
   const renderPlaceItem = ({item}) => {
+    let itemUri =
+      'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' +
+      item.photoReference +
+      '&key=AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I';
     return (
-      <TouchableOpacity style={tripDetailStyles.placeItemView}>
-        <Image style={tripDetailStyles.placeImage} source={{uri: imageUri}} />
+      <TouchableOpacity
+        style={tripDetailStyles.placeItemView}
+        onPress={() => navigation.navigate(NAVIGATE_TO_DESTINATION_DETAIL,{destination:item})}>
+        <Image style={tripDetailStyles.placeImage} source={{uri: itemUri}} />
         <View style={tripDetailStyles.placeContentView}>
-          <Text style={tripDetailStyles.name}>{item.name}</Text>
-          <Text style={tripDetailStyles.location}>{item.location}</Text>
+          <Text style={tripDetailStyles.name}>{item.destinationName}</Text>
           <Text style={tripDetailStyles.location}>
-            {'Địa điểm tập trung: ' + item.gatheringPlace}
+            {item.destinationLocation}
           </Text>
-          <Text style={tripDetailStyles.location}>
-            {'Ngày đến: ' + item.date}
-          </Text>
-          <Text style={tripDetailStyles.location}>
-            {'Thời gian đến: ' + item.arriveTime}
-          </Text>
-          <Text style={tripDetailStyles.location}>
-            {'Thời gian đi: ' + item.leavingTime}
-          </Text>
+          {/*<Text style={tripDetailStyles.location}>*/}
+          {/*  {'Địa điểm tập trung: ' + item.gatheringPlace}*/}
+          {/*</Text>*/}
+          {/*<Text style={tripDetailStyles.location}>*/}
+          {/*  {'Ngày đến: ' + item.date}*/}
+          {/*</Text>*/}
+          {/*<Text style={tripDetailStyles.location}>*/}
+          {/*  {'Thời gian đến: ' + item.arriveTime}*/}
+          {/*</Text>*/}
+          {/*<Text style={tripDetailStyles.location}>*/}
+          {/*  {'Thời gian đi: ' + item.leavingTime}*/}
+          {/*</Text>*/}
         </View>
       </TouchableOpacity>
     );
@@ -227,7 +237,7 @@ const TripDetail = ({route, navigation}) => {
           </View>
           <ScrollView style={tripDetailStyles.scrollView}>
             <FlatList
-              data={placeData}
+              data={trip.schedule}
               renderItem={renderPlaceItem}
               keyExtractor={(item, index) => index.toString()}
             />

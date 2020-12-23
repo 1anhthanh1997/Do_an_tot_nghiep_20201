@@ -4,7 +4,8 @@ import {
   userPostApi,
   patchApi,
   secondPatchApi,
-  thirdPatchApi, secondGetApi,
+  thirdPatchApi,
+  secondGetApi,
 } from '../../../api';
 const loginUrl = '/users/login';
 const registerUrl = '/users';
@@ -15,6 +16,7 @@ const postTripUrl = '/trip';
 const editTripUrl = '/editTrip/';
 const joinTripUrl = '/joinTrip/';
 const getMemberInfoUrl = '/memberInfo/';
+const addDestinationUrl = '/addDestination/';
 
 function* callLogin(data) {
   console.log('Call');
@@ -93,6 +95,15 @@ function* callGetMemberInfo(username) {
   return responseData;
 }
 
+function* callAddDestination(destination) {
+  let lastAddDestinationUrl = addDestinationUrl + destination.groupId;
+  const response = yield userPostApi(lastAddDestinationUrl, destination);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
 export const Api = {
   callLogin,
   callRegister,
@@ -103,4 +114,5 @@ export const Api = {
   callEditTrip,
   callJoinTrip,
   callGetMemberInfo,
+  callAddDestination,
 };

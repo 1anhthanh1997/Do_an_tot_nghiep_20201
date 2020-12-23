@@ -25,7 +25,7 @@ const arrangePlaceStyles = StyleSheet.create({
   },
   placeLocation: {
     fontSize: 14,
-    color: COLOR.gray,
+    color: COLOR.dark_gray,
   },
   deleteButton: {
     width: '15%',

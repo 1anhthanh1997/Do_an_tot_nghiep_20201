@@ -21,7 +21,8 @@ const placeData = [
   },
 ];
 
-const ArrangePlace = ({navigation}) => {
+const ArrangePlace = ({navigation, route}) => {
+  const {trip} = route.params;
   const [data, setData] = useState(placeData);
   const [isDisplayConfirmDialog, setIsDisplayConfirmDialog] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -45,8 +46,12 @@ const ArrangePlace = ({navigation}) => {
         style={arrangePlaceStyles.placeItemView}
         onLongPress={drag}>
         <View style={arrangePlaceStyles.contentView}>
-          <Text style={arrangePlaceStyles.placeName}>{item.name}</Text>
-          <Text style={arrangePlaceStyles.placeLocation}>{item.location}</Text>
+          <Text style={arrangePlaceStyles.placeName}>
+            {item.destinationName}
+          </Text>
+          <Text style={arrangePlaceStyles.placeLocation}>
+            {item.destinationLocation}
+          </Text>
         </View>
         <TouchableOpacity
           style={arrangePlaceStyles.deleteButton}
@@ -84,7 +89,7 @@ const ArrangePlace = ({navigation}) => {
   return (
     <View style={arrangePlaceStyles.screenView}>
       <DraggableFlatList
-        data={data}
+        data={trip.schedule}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         onDragEnd={({data}) => {
