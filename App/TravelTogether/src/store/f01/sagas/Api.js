@@ -17,6 +17,7 @@ const editTripUrl = '/editTrip/';
 const joinTripUrl = '/joinTrip/';
 const getMemberInfoUrl = '/memberInfo/';
 const addDestinationUrl = '/addDestination/';
+const editDestinationUrl = '/addDestination/';
 
 function* callLogin(data) {
   console.log('Call');
@@ -104,6 +105,15 @@ function* callAddDestination(destination) {
   return responseData;
 }
 
+function* callEditDestination(destination) {
+  let lastAddDestinationUrl = editDestinationUrl + destination.groupId;
+  const response = yield secondPatchApi(lastAddDestinationUrl, destination);
+  const responseData = yield response.status === 200 || response.status === 201
+    ? response.data
+    : {};
+  return responseData;
+}
+
 export const Api = {
   callLogin,
   callRegister,
@@ -115,4 +125,5 @@ export const Api = {
   callJoinTrip,
   callGetMemberInfo,
   callAddDestination,
+  callEditDestination,
 };

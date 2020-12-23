@@ -9,6 +9,7 @@ import {
   JOIN_TRIP,
   GET_MEMBER_INFO,
   ADD_DESTINATION,
+  EDIT_DESTINATION,
 } from './actionTypes';
 
 const login = (data) => {
@@ -80,6 +81,13 @@ const addDestination = (data) => {
   };
 };
 
+const editDestination = (data) => {
+  return {
+    type: EDIT_DESTINATION,
+    payload: data,
+  };
+};
+
 export {
   login,
   register,
@@ -91,4 +99,5 @@ export {
   joinTrip,
   getMemberInfo,
   addDestination,
+  editDestination,
 };

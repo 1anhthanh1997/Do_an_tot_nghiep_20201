@@ -17,8 +17,7 @@ const destinationDetailStyles = StyleSheet.create({
   },
   bodyView: {
     width: '100%',
-
-    paddingTop: 50,
+    paddingTop: 20,
     paddingLeft: 18,
     paddingRight: 18,
     justifyContent: 'center',
@@ -35,7 +34,7 @@ const destinationDetailStyles = StyleSheet.create({
     width: '100%',
   },
   createNameText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: COLOR.black,
   },
@@ -44,7 +43,7 @@ const destinationDetailStyles = StyleSheet.create({
     marginTop: 20,
   },
   tripDescriptionText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: COLOR.black,
   },
@@ -60,7 +59,6 @@ const destinationDetailStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLOR.black,
     justifyContent: 'center',
-    paddingLeft: 5,
   },
   createTripTouchable: {
     height: 44,
@@ -103,6 +101,16 @@ const destinationDetailStyles = StyleSheet.create({
     width: '100%',
     paddingLeft: 15,
     paddingRight: 15,
+  },
+  destinationName: {
+    fontSize: 16,
+    color: COLOR.dark_gray,
+    marginLeft: 5,
+  },
+  destinationLocation: {
+    fontSize: 16,
+    color: COLOR.dark_gray,
+    marginLeft: 5,
   },
 });
 export default destinationDetailStyles;

@@ -4,7 +4,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {COLOR, STATUS} from '../../../constants';
 import destinationDetailStyles from './DestinationDetailStyles';
 import {useFocusEffect} from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {
   NAVIGATE_TO_HOME_SCREEN,
   NAVIGATE_TO_PERSONAL_SCREEN,
@@ -32,11 +33,9 @@ const DestinationDetail = ({
   const [isFistTime, setIsFirstTime] = useState(true);
   const [tripName, setTripName] = useState(null);
   const [tripDescription, setTripDescription] = useState(null);
-  const [startDate, setStartDate] = useState(new Date(1598051730000));
-  const [endDate, setEndDate] = useState(new Date(1598051730000));
-  const [isDisplayPickStartDate, setIsDisplayPickStartDate] = useState(false);
+  const [startTime, setStartTime] = useState(new Date(1598051730000));
+  const [endTime, setEndTime] = useState(new Date(1598051730000));
   const [isDisplayPickStartTime, setIsDisplayPickStartTime] = useState(false);
-  const [isDisplayPickEndDate, setIsDisplayPickEndDate] = useState(false);
   const [isDisplayPickEndTime, setIsDisplayPickEndTime] = useState(false);
   const [message, setMessage] = useState('');
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
@@ -102,51 +101,25 @@ const DestinationDetail = ({
       groupId: makeId(24),
       groupName: tripName,
       groupDescription: tripDescription,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: startTime,
+      endDate: endTime,
     };
     console.log(trip);
     await _createTrip(trip);
     // navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
   };
 
-  const onStartDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || startDate;
-    setIsDisplayPickStartDate(false);
-    setStartDate(currentDate);
+  const onStartTimeChange = (selectedTime) => {
+    const currentDate = selectedTime || endTime;
+    setIsDisplayPickStartTime(false);
+    setStartTime(currentDate);
   };
 
-  const onEndDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || endDate;
-    setIsDisplayPickEndDate(false);
-    setEndDate(currentDate);
-  };
-
-  const onPressPickTime = (type, isArrived) => {
-    if (type === 0 && isArrived === true) {
-      setIsDisplayPickStartTime(true);
-      setIsDisplayPickStartDate(false);
-      setIsDisplayPickEndTime(false);
-      setIsDisplayPickEndDate(false);
-    }
-    if (type === 1 && isArrived === true) {
-      setIsDisplayPickStartTime(false);
-      setIsDisplayPickStartDate(true);
-      setIsDisplayPickEndTime(false);
-      setIsDisplayPickEndDate(false);
-    }
-    if (type === 0 && isArrived === false) {
-      setIsDisplayPickStartTime(false);
-      setIsDisplayPickStartDate(false);
-      setIsDisplayPickEndTime(true);
-      setIsDisplayPickEndDate(false);
-    }
-    if (type === 1 && isArrived === false) {
-      setIsDisplayPickStartTime(false);
-      setIsDisplayPickStartDate(false);
-      setIsDisplayPickEndTime(false);
-      setIsDisplayPickEndDate(true);
-    }
+  const onEndTimeChange = (selectedTime) => {
+    console.log(selectedTime);
+    const currentTime = selectedTime || endTime;
+    setIsDisplayPickEndTime(false);
+    setEndTime(currentTime);
   };
 
   const renderBody = () => {
@@ -164,13 +137,17 @@ const DestinationDetail = ({
           <Text style={destinationDetailStyles.createNameText}>
             Tên điểm đến
           </Text>
-          <Text>{destination.destinationName}</Text>
+          <Text style={destinationDetailStyles.destinationName}>
+            {destination.destinationName}
+          </Text>
         </View>
         <View style={destinationDetailStyles.tripDescriptionView}>
           <Text style={destinationDetailStyles.tripDescriptionText}>
             Địa chỉ
           </Text>
-          <Text>{destination.destinationLocation}</Text>
+          <Text style={destinationDetailStyles.destinationLocation}>
+            {destination.destinationLocation}
+          </Text>
         </View>
         <View style={destinationDetailStyles.tripDescriptionView}>
           <Text style={destinationDetailStyles.tripDescriptionText}>
@@ -178,48 +155,27 @@ const DestinationDetail = ({
           </Text>
           <TouchableOpacity
             style={destinationDetailStyles.dateTouchable}
-            onPress={() => onPressPickTime(0, true)}>
-            {/*<Text>*/}
-            {/*  {startDate.getDate() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getMonth() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getFullYear()}*/}
-            {/*</Text>*/}
+            onPress={() => setIsDisplayPickStartTime(true)}>
+            {!destination.leavingTime && (
+              <Text style={destinationDetailStyles.destinationLocation}>
+                {startTime.getHours() +
+                  ':' +
+                  startTime.getMinutes() +
+                  ' - ' +
+                  startTime.getDate() +
+                  '/' +
+                  (startTime.getMonth() + 1) +
+                  '/' +
+                  startTime.getFullYear()}
+              </Text>
+            )}
           </TouchableOpacity>
           {isDisplayPickStartTime && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={startDate}
-              is24Hour={true}
-              mode={'time'}
-              display="default"
-              onChange={onStartDateChange}
-            />
-          )}
-        </View>
-        <View style={destinationDetailStyles.tripDescriptionView}>
-          <Text style={destinationDetailStyles.tripDescriptionText}>
-            Ngày đến
-          </Text>
-          <TouchableOpacity
-            style={destinationDetailStyles.dateTouchable}
-            onPress={() => onPressPickTime(1, true)}>
-            {/*<Text>*/}
-            {/*  {startDate.getDate() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getMonth() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getFullYear()}*/}
-            {/*</Text>*/}
-          </TouchableOpacity>
-          {isDisplayPickStartDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={startDate}
-              is24Hour={true}
-              display="default"
-              onChange={onStartDateChange}
+            <DateTimePickerModal
+              isVisible={isDisplayPickStartTime}
+              mode="datetime"
+              onConfirm={onStartTimeChange}
+              onCancel={() => setIsDisplayPickEndTime(false)}
             />
           )}
         </View>
@@ -229,49 +185,27 @@ const DestinationDetail = ({
           </Text>
           <TouchableOpacity
             style={destinationDetailStyles.dateTouchable}
-            onPress={() => onPressPickTime(0, false)}>
-            {/*<Text>*/}
-            {/*  {startDate.getDate() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getMonth() +*/}
-            {/*    '/' +*/}
-            {/*    startDate.getFullYear()}*/}
-            {/*</Text>*/}
+            onPress={() => setIsDisplayPickEndTime(true)}>
+            {!destination.leavingTime && (
+              <Text style={destinationDetailStyles.destinationLocation}>
+                {endTime.getHours() +
+                  ':' +
+                  endTime.getMinutes() +
+                  ' - ' +
+                  endTime.getDate() +
+                  '/' +
+                  (endTime.getMonth() + 1) +
+                  '/' +
+                  endTime.getFullYear()}
+              </Text>
+            )}
           </TouchableOpacity>
           {isDisplayPickEndTime && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={startDate}
-              is24Hour={true}
-              mode={'time'}
-              display="default"
-              onChange={onStartDateChange}
-            />
-          )}
-        </View>
-        <View style={destinationDetailStyles.tripDescriptionView}>
-          <Text style={destinationDetailStyles.tripDescriptionText}>
-            Ngày đi
-          </Text>
-          <TouchableOpacity
-            style={destinationDetailStyles.dateTouchable}
-            onPress={() => onPressPickTime(1, false)}>
-            {/*{destination.arrivedTime&&<Text>*/}
-            {/*  {endDate.getDate() +*/}
-            {/*    '/' +*/}
-            {/*    endDate.getMonth() +*/}
-            {/*    '/' +*/}
-            {/*    endDate.getFullYear()}*/}
-            {/*</Text>}*/}
-          </TouchableOpacity>
-          {isDisplayPickEndDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={endDate}
-              is24Hour={true}
-              display="default"
-              // mode={'time'}
-              onChange={onEndDateChange}
+            <DateTimePickerModal
+              isVisible={isDisplayPickEndTime}
+              mode="datetime"
+              onConfirm={onEndTimeChange}
+              onCancel={() => setIsDisplayPickEndTime(false)}
             />
           )}
         </View>

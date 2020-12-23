@@ -19,7 +19,11 @@ import {
   JOIN_TRIP_SUCCESS,
   GET_MEMBER_INFO_SUCCESS,
   GET_MEMBER_INFO_LOADING,
-  GET_MEMBER_INFO_FAIL, ADD_DESTINATION_SUCCESS, ADD_DESTINATION_LOADING, ADD_DESTINATION_FAIL,
+  GET_MEMBER_INFO_FAIL,
+  ADD_DESTINATION_SUCCESS,
+  ADD_DESTINATION_LOADING,
+  ADD_DESTINATION_FAIL,
+  EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_LOADING,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -70,6 +74,12 @@ const initUserInfo = {
   addDestination: {
     status: STATUS.DEFAULT,
     addDestinationResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  editDestination: {
+    status: STATUS.DEFAULT,
+    editDestinationResultData: {},
     errorCode: '',
     errorMessage: '',
   },
@@ -265,6 +275,30 @@ const f02Reducer = (info = initUserInfo, action) => {
       return {
         ...info,
         addDestination: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case EDIT_DESTINATION_SUCCESS:
+      return {
+        ...info,
+        editDestination: {
+          status: STATUS.SUCCESS,
+          editDestinationResultData: action.payload,
+        },
+      };
+    case EDIT_DESTINATION_LOADING:
+      return {
+        ...info,
+        editDestination: {
+          status: STATUS.LOADING,
+        },
+      };
+    case EDIT_TRIP_FAIL:
+      return {
+        ...info,
+        editDestination: {
           status: STATUS.ERROR,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage,

@@ -178,6 +178,24 @@ exports.addDestination = async (req, res) => {
         console.log(e)
     }
 }
+exports.editDestination = async (req, res) => {
+    try {
+        console.log(req.params.groupId)
+        let chosenGroup = await Group.findOne({groupId: req.params.groupId})
+        let destination = req.body
+        delete destination.groupId
+
+        await chosenGroup.schedule.map((item,index) => {
+            if (item.destinationId === destination.destinationId) {
+                chosenGroup.schedule[index]=destination
+            }
+        })
+        await chosenGroup.save()
+        res.send(chosenGroup)
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 
 
