@@ -10,6 +10,9 @@ import {
   Switch,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SOCKET} from '../../../constants';
+const socket = SOCKET.socket;
+import ReactNativeAN from 'react-native-alarm-notification';
 
 import {getApi, postApi} from '../../../api';
 import loginStyles from './LoginStyles';
@@ -24,6 +27,18 @@ import LoadingView from '../../../commons/loadingView/LoadingView';
 import {Dialog} from '../../../commons';
 import {connect} from 'react-redux';
 import {login} from '../../../store/f01/actions';
+
+const alarmNotifData = {
+  title: 'Alarm',
+  message: 'Stand up',
+  vibrate: true,
+  play_sound: true,
+  schedule_type: 'once',
+  channel: 'wakeup',
+  data: {content: 'my notification id is 22'},
+  loop_sound: true,
+  has_button: true,
+};
 
 const Login = ({navigation, login: _login, loginData}) => {
   const [username, setUserName] = useState(null);
@@ -57,6 +72,19 @@ const Login = ({navigation, login: _login, loginData}) => {
   }, []);
 
   useEffect(() => {
+    socket.on('room', async (data) => {
+      console.log('room join');
+      console.log(data);
+      ReactNativeAN.sendNotification(alarmNotifData);
+      // Schedule Future Alarm
+      const alarm = await ReactNativeAN.scheduleAlarm({
+        ...alarmNotifData,
+        fire_date: fireDate,
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     if (isFirstLogin) {
       setIsFirstLogin(false);
       return;
@@ -73,6 +101,10 @@ const Login = ({navigation, login: _login, loginData}) => {
       replaceToScreen(NAVIGATE_TO_TAB_SCREEN);
     };
     if (loginData.status === STATUS.SUCCESS) {
+      // console.log(loginData.loginResultData.groups);
+      socket.emit('join', {
+        groups: loginData.loginResultData.groups,
+      });
       onLoginSuccess();
     }
     if (loginData.status === STATUS.ERROR) {

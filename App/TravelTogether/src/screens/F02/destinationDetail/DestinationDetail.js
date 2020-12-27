@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+  Keyboard,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLOR, STATUS} from '../../../constants';
 import destinationDetailStyles from './DestinationDetailStyles';
@@ -13,7 +20,7 @@ import {
   NAVIGATE_TO_TRIP_SCREEN,
 } from '../../../navigations/routers';
 import {connect} from 'react-redux';
-import {createTrip, getAllTrip} from '../../../store/f01/actions';
+import {editDestination, getAllTrip} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
 import {Dialog} from '../../../commons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -24,15 +31,13 @@ const imageUri =
 const DestinationDetail = ({
   navigation,
   route,
-  createTripData,
+  editDestinationData,
   getAllTripData,
-  createTrip: _createTrip,
+  editDestination: _editDestination,
   getAllTrip: _getAllTrip,
 }) => {
-  const {destination} = route.params;
+  const {destination, tripId} = route.params;
   const [isFistTime, setIsFirstTime] = useState(true);
-  const [tripName, setTripName] = useState(null);
-  const [tripDescription, setTripDescription] = useState(null);
   const [startTime, setStartTime] = useState(new Date(1598051730000));
   const [endTime, setEndTime] = useState(new Date(1598051730000));
   const [isDisplayPickStartTime, setIsDisplayPickStartTime] = useState(false);
@@ -40,6 +45,8 @@ const DestinationDetail = ({
   const [message, setMessage] = useState('');
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
   const [errCode, setErrorCode] = useState('');
+  const [activityField, setActivityField] = useState('');
+  const [activities, setActivities] = useState(destination.activities);
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -54,13 +61,22 @@ const DestinationDetail = ({
   });
 
   useEffect(() => {
+    if (destination.arrivedTime) {
+      setStartTime(new Date(destination.arrivedTime));
+    }
+    if (destination.leavingTime) {
+      setEndTime(new Date(destination.leavingTime));
+    }
+  }, []);
+
+  useEffect(() => {
     if (isFistTime) {
       setIsFirstTime(false);
       console.log(isFistTime);
       return;
     }
     if (getAllTripData.status === STATUS.SUCCESS) {
-      setMessage('Tạo chuyến đi thành công');
+      setMessage('Chỉnh sửa thông tin thành công');
       setIsDisplayDialog(true);
     }
     if (getAllTripData.status === STATUS.ERROR) {
@@ -75,38 +91,37 @@ const DestinationDetail = ({
       setIsFirstTime(false);
       return;
     }
-    if (createTripData.status === STATUS.SUCCESS) {
+    if (editDestinationData.status === STATUS.SUCCESS) {
       _getAllTrip();
     }
-    if (createTripData.status === STATUS.ERROR) {
-      setErrorCode(createTripData.errorCode);
-      setMessage(createTripData.errorMessage);
+    if (editDestinationData.status === STATUS.ERROR) {
+      setErrorCode(editDestinationData.errorCode);
+      setMessage(editDestinationData.errorMessage);
       setIsDisplayDialog(true);
     }
-  }, [createTripData]);
-
-  const makeId = (length) => {
-    let result = '';
-    let characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
+  }, [editDestinationData]);
 
   const onPressCreateTrip = async () => {
-    let trip = {
-      groupId: makeId(24),
-      groupName: tripName,
-      groupDescription: tripDescription,
-      startDate: startTime,
-      endDate: endTime,
-    };
-    console.log(trip);
-    await _createTrip(trip);
+    let trip = destination;
+    trip.groupId = tripId;
+    trip.arrivedTime = startTime;
+    trip.leavingTime = endTime;
+    trip.activities = activities;
+    // console.log(trip);
+    await _editDestination(trip);
     // navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+  };
+
+  const onPressAddActivity = () => {
+    if (!activityField) {
+      return;
+    }
+    let tmp = [...activities];
+    tmp.push(activityField);
+    console.log(tmp);
+    setActivities(tmp);
+    setActivityField('');
+    Keyboard.dismiss();
   };
 
   const onStartTimeChange = (selectedTime) => {
@@ -122,17 +137,35 @@ const DestinationDetail = ({
     setEndTime(currentTime);
   };
 
+  const onPressDeleteActivity = (deletedIndex) => {
+    let tmp = [];
+    activities.map((item, index) => {
+      if (index !== deletedIndex) {
+        tmp.push(item);
+      }
+    });
+    console.log(tmp);
+    setActivities(tmp);
+  };
+
+  const renderActivityItem = ({item, index}) => {
+    return (
+      <View style={destinationDetailStyles.activityItemView}>
+        <View style={{width: '90%'}}>
+          <Text style={destinationDetailStyles.activityItemText}>{item}</Text>
+        </View>
+        <TouchableOpacity
+          style={destinationDetailStyles.plusTouchable}
+          onPress={() => onPressDeleteActivity(index)}>
+          <MaterialCommunityIcons name="close" color={COLOR.black} size={20} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   const renderBody = () => {
     return (
       <View style={destinationDetailStyles.bodyView}>
-        {/*<MaterialCommunityIcons*/}
-        {/*  name="map-marker-plus"*/}
-        {/*  color={COLOR.red}*/}
-        {/*  size={45}*/}
-        {/*/>*/}
-        {/*<Text style={destinationDetailStyles.createTripText}>*/}
-        {/*  Thêm điểm dừng chân*/}
-        {/*</Text>*/}
         <View style={destinationDetailStyles.tripNameView}>
           <Text style={destinationDetailStyles.createNameText}>
             Tên điểm đến
@@ -156,26 +189,25 @@ const DestinationDetail = ({
           <TouchableOpacity
             style={destinationDetailStyles.dateTouchable}
             onPress={() => setIsDisplayPickStartTime(true)}>
-            {!destination.leavingTime && (
-              <Text style={destinationDetailStyles.destinationLocation}>
-                {startTime.getHours() +
-                  ':' +
-                  startTime.getMinutes() +
-                  ' - ' +
-                  startTime.getDate() +
-                  '/' +
-                  (startTime.getMonth() + 1) +
-                  '/' +
-                  startTime.getFullYear()}
-              </Text>
-            )}
+            <Text style={destinationDetailStyles.destinationLocation}>
+              {startTime.getHours() +
+                ':' +
+                startTime.getMinutes() +
+                ' - ' +
+                startTime.getDate() +
+                '/' +
+                (startTime.getMonth() + 1) +
+                '/' +
+                startTime.getFullYear()}
+            </Text>
           </TouchableOpacity>
           {isDisplayPickStartTime && (
             <DateTimePickerModal
               isVisible={isDisplayPickStartTime}
               mode="datetime"
+              date={startTime}
               onConfirm={onStartTimeChange}
-              onCancel={() => setIsDisplayPickEndTime(false)}
+              onCancel={() => setIsDisplayPickStartTime(false)}
             />
           )}
         </View>
@@ -186,24 +218,23 @@ const DestinationDetail = ({
           <TouchableOpacity
             style={destinationDetailStyles.dateTouchable}
             onPress={() => setIsDisplayPickEndTime(true)}>
-            {!destination.leavingTime && (
-              <Text style={destinationDetailStyles.destinationLocation}>
-                {endTime.getHours() +
-                  ':' +
-                  endTime.getMinutes() +
-                  ' - ' +
-                  endTime.getDate() +
-                  '/' +
-                  (endTime.getMonth() + 1) +
-                  '/' +
-                  endTime.getFullYear()}
-              </Text>
-            )}
+            <Text style={destinationDetailStyles.destinationLocation}>
+              {endTime.getHours() +
+                ':' +
+                endTime.getMinutes() +
+                ' - ' +
+                endTime.getDate() +
+                '/' +
+                (endTime.getMonth() + 1) +
+                '/' +
+                endTime.getFullYear()}
+            </Text>
           </TouchableOpacity>
           {isDisplayPickEndTime && (
             <DateTimePickerModal
               isVisible={isDisplayPickEndTime}
               mode="datetime"
+              date={endTime}
               onConfirm={onEndTimeChange}
               onCancel={() => setIsDisplayPickEndTime(false)}
             />
@@ -213,6 +244,28 @@ const DestinationDetail = ({
           <Text style={destinationDetailStyles.tripDescriptionText}>
             Các hoạt động
           </Text>
+          <View style={destinationDetailStyles.activitiesView}>
+            <TextInput
+              style={destinationDetailStyles.textInput}
+              value={activityField}
+              onChangeText={(val) => setActivityField(val)}
+              placeholder={'Thêm hoạt động'}
+            />
+            <TouchableOpacity
+              style={destinationDetailStyles.plusTouchable}
+              onPress={onPressAddActivity}>
+              <MaterialCommunityIcons
+                name="plus"
+                color={COLOR.black}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={activities}
+            renderItem={renderActivityItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       </View>
     );
@@ -239,7 +292,7 @@ const DestinationDetail = ({
     <View style={destinationDetailStyles.screenView}>
       <LoadingView
         visible={
-          createTripData.status === STATUS.LOADING ||
+          editDestinationData.status === STATUS.LOADING ||
           getAllTripData.status === STATUS.LOADING
         }
       />
@@ -249,11 +302,11 @@ const DestinationDetail = ({
   );
 };
 const mapStateToProps = (state) => {
-  const createTripData = state.f02Reducer.createTrip;
+  const editDestinationData = state.f02Reducer.editDestination;
   const getAllTripData = state.f02Reducer.getAllTrip;
-  return {createTripData, getAllTripData};
+  return {editDestinationData, getAllTripData};
 };
 
-export default connect(mapStateToProps, {createTrip, getAllTrip})(
+export default connect(mapStateToProps, {editDestination, getAllTrip})(
   DestinationDetail,
 );

@@ -5,11 +5,17 @@ import notificationStyles from './NotificationStyles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLOR, IMG, STATUS} from '../../../constants';
 import {Dialog} from '../../../commons';
-import {NAVIGATE_TO_MEMBER_INFO} from '../../../navigations/routers';
+import {
+  NAVIGATE_TO_MEMBER_INFO,
+  NAVIGATE_TO_TRIP_DETAIL,
+} from '../../../navigations/routers';
 import {connect} from 'react-redux';
 import {getMemberInfo} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
 import tripStyles from '../trip/TripStyles';
+import {SOCKET} from '../../../constants';
+const socket = SOCKET.socket;
+
 const sampleNotificationData = [
   {
     content: 'Bạn đã tạo thành công chuyến đi Hà Nội - Nam Định',
@@ -29,6 +35,7 @@ const Notification = ({
   navigation,
   route,
   getMemberInfoData,
+  loginData,
   getMemberInfo: _getMemberInfo,
 }) => {
   const [isFirstTime, setIsFirstTime] = useState(true);
@@ -37,21 +44,11 @@ const Notification = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [message, setMessage] = useState('');
 
-  // useEffect(() => {
-  //   if (isFirstTime) {
-  //     setIsFirstTime(false);
-  //     return;
-  //   }
-  //   if (getMemberInfoData.status === STATUS.SUCCESS) {
-  //     navigation.navigate(NAVIGATE_TO_MEMBER_INFO, {
-  //       info: getMemberInfoData.getMemberInfoResultData,
-  //     });
-  //   }
-  //   if (getMemberInfoData.status === STATUS.ERROR) {
-  //     setMessage(getMemberInfoData.errorMessage);
-  //     setIsDisplayConfirmDialog(true);
-  //   }
-  // }, [getMemberInfoData]);
+  useEffect(() => {
+    socket.on('notification',()=>{
+
+    })
+  }, []);
 
   // const deletePlace = () => {
   //   let tmp = data.filter((value, index, arr) => {
@@ -66,17 +63,82 @@ const Notification = ({
     setIsDisplayConfirmDialog(true);
   };
 
-  // const onPressMember = (index) => {
-  //   console.log(members);
-  //   _getMemberInfo(members[index]);
-  // };
+  const setTime = (time) => {
+    let longTime = new Date(new Date() - new Date(time));
+    let startTime = new Date(0);
+    // return new Date(0).getMinutes();
+    // console.log(new Date(new Date() - new Date(time)).getHours());
+    if (new Date() - new Date(time) < 1000) {
+      return '1 giây trước';
+    }
+    if (
+      new Date() - new Date(time) >= 1000 &&
+      new Date() - new Date(time) < 60000
+    ) {
+      return (
+        (new Date().getSeconds() > new Date(time).getSeconds()
+          ? new Date().getSeconds() - new Date(time).getSeconds()
+          : new Date().getSeconds() + 60 - new Date(time).getSeconds()
+        ).toString() + ' giây trước'
+      );
+    }
+    if (
+      new Date() - new Date(time) >= 60000 &&
+      new Date() - new Date(time) < 3600000
+    ) {
+      return (
+        (new Date().getMinutes() > new Date(time).getMinutes()
+          ? new Date().getMinutes() - new Date(time).getMinutes()
+          : new Date().getMinutes() + 60 - new Date(time).getMinutes()
+        ).toString() + ' phút trước'
+      );
+    }
+    if (
+      new Date() - new Date(time) >= 3600000 &&
+      new Date() - new Date(time) < 86400000
+    ) {
+      return (
+        (new Date().getHours() > new Date(time).getHours()
+          ? new Date().getHours() - new Date(time).getHours()
+          : new Date().getHours() + 24 - new Date(time).getHours()
+        ).toString() + ' giờ trước'
+      );
+      // return (longTime.getHours() - startTime.getHours() + 1).toString()+'giờ trư';
+    }
+    if (
+      new Date() - new Date(time) >= 86400000 &&
+      new Date() - new Date(time) < 2592000000
+    ) {
+      return (
+        (new Date().getDate() > new Date(time).getDate()
+          ? new Date().getDate() - new Date(time).getDate()
+          : new Date().getDate() + 30 - new Date(time).getDate()
+        ).toString() + ' ngày trước'
+      );
+    }
+    if (
+      new Date() - new Date(time) >= 2592000000 &&
+      new Date() - new Date(time) < 31536000000
+    ) {
+      return (
+        (new Date().getMonth() > new Date(time).getMonth()
+          ? new Date().getMonth() - new Date(time).getMonth()
+          : new Date().getMonth() + 12 - new Date(time).getMonth()
+        ).toString() + ' tháng trước'
+      );
+    }
+    return (
+      (new Date().getFullYear() - new Date(time).getFullYear()).toString() +
+      ' năm trước'
+    );
+  };
 
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
         style={notificationStyles.placeItemView}
         onPress={() => {
-          console.log('Hello');
+          navigation.navigate(NAVIGATE_TO_TRIP_DETAIL, {tripId: item.groupId});
         }}>
         <View style={notificationStyles.contentView}>
           <View style={notificationStyles.firstChildView}>
@@ -86,20 +148,17 @@ const Notification = ({
             />
           </View>
           <View style={notificationStyles.secondChildView}>
-            <Text style={notificationStyles.placeName}>{item.content}</Text>
-            <Text style={notificationStyles.time}>{item.time}</Text>
+            <Text>
+              <Text style={notificationStyles.groupName}>{item.owner}</Text>
+              <Text style={notificationStyles.placeName}>
+                {' ' + item.content + ' '}
+              </Text>
+              <Text style={notificationStyles.groupName}>{item.groupName}</Text>
+            </Text>
+            <Text style={notificationStyles.time}>{setTime(item.time)}</Text>
           </View>
           <View style={notificationStyles.thirdChildView} />
         </View>
-        {/*<TouchableOpacity*/}
-        {/*  style={notificationStyles.deleteButton}*/}
-        {/*  onPress={() => onPressDelete(index)}>*/}
-        {/*  <MaterialCommunityIcons*/}
-        {/*    name="trash-can-outline"*/}
-        {/*    color={COLOR.red}*/}
-        {/*    size={25}*/}
-        {/*  />*/}
-        {/*</TouchableOpacity>*/}
       </TouchableOpacity>
     );
   };
@@ -130,7 +189,7 @@ const Notification = ({
     <View style={notificationStyles.screenView}>
       {renderHeader()}
       <DraggableFlatList
-        data={sampleNotificationData}
+        data={loginData.loginResultData.notification}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -140,8 +199,9 @@ const Notification = ({
 };
 
 const mapStateToProps = (state) => {
+  const loginData = state.f01Reducer.login;
   const getMemberInfoData = state.f02Reducer.getMemberInfo;
-  return {getMemberInfoData};
+  return {getMemberInfoData, loginData};
 };
 
 export default connect(mapStateToProps, {getMemberInfo})(Notification);

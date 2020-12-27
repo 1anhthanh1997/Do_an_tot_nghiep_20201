@@ -54,7 +54,7 @@ const Trip = ({navigation, getAllTripData, getAllTrip: _getAllTrip}) => {
         style={tripStyles.tripView}
         onPress={() =>
           redirectToScreen(NAVIGATE_TO_TRIP_DETAIL, {
-            trip: item,
+            tripId: item.groupId,
           })
         }>
         <Image source={{uri: imageUri}} style={tripStyles.tripImage} />

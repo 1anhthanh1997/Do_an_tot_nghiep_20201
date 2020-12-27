@@ -13,7 +13,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tripDetailStyles from './TripDetailStyles';
 import SlidingUpPanel from 'rn-sliding-up-panel';
-import {COLOR} from '../../../constants';
+import {COLOR, STATUS, SOCKET, ASYNC_STORAGE} from '../../../constants';
 import Geolocation from '@react-native-community/geolocation';
 import {
   NAVIGATE_TO_ADD_DESTINATION,
@@ -23,7 +23,13 @@ import {
   NAVIGATE_TO_EDIT_TRIP,
   NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
+import MapViewDirections from 'react-native-maps-directions';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {connect} from 'react-redux';
+import {getMemberInfo} from '../../../store/f01/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const GOOGLE_MAPS_APIKEY = 'AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I';
+const socket = SOCKET.socket;
 
 const placeData = [
   {
@@ -68,26 +74,53 @@ const initPosition = {
 const imageUri =
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHw%3D&w=1000&q=80';
 
-const TripDetail = ({route, navigation}) => {
-  const {trip} = route.params;
+const TripDetail = ({route, navigation, getAllTripData}) => {
+  const {tripId} = route.params;
+  const [trip, setTrip] = useState('');
   const [position, setPosition] = useState(initPosition);
 
   useEffect(() => {
-    console.log(trip.startDate);
-    Geolocation.getCurrentPosition(
+    if (getAllTripData.status === STATUS.SUCCESS) {
+      getAllTripData.getAllTripResultData.map((item) => {
+        if (item.groupId === tripId) {
+          setTrip(item);
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    socket.on('test', (data) => {
+      console.log(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    // console.log(trip.startDate);
+    setInterval(getLocation, 20000);
+  }, []);
+
+  const redirectToScreen = (name, params) => {
+    navigation.navigate(name, params);
+  };
+
+  const getLocation = async () => {
+    const username = await AsyncStorage.getItem(ASYNC_STORAGE.USERNAME);
+    await Geolocation.getCurrentPosition(
       (position) => {
+        console.log(position);
+        socket.emit('location', {
+          username: username,
+          position: position,
+        });
         setPosition(position);
       },
       (error) => {
         // See error code charts below.
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000000},
     );
-  }, []);
-
-  const redirectToScreen = (name, params) => {
-    navigation.navigate(name, params);
   };
 
   const onPressFloatButton = () => {
@@ -102,7 +135,12 @@ const TripDetail = ({route, navigation}) => {
     return (
       <TouchableOpacity
         style={tripDetailStyles.placeItemView}
-        onPress={() => navigation.navigate(NAVIGATE_TO_DESTINATION_DETAIL,{destination:item})}>
+        onPress={() =>
+          navigation.navigate(NAVIGATE_TO_DESTINATION_DETAIL, {
+            destination: item,
+            tripId: trip.groupId,
+          })
+        }>
         <Image style={tripDetailStyles.placeImage} source={{uri: itemUri}} />
         <View style={tripDetailStyles.placeContentView}>
           <Text style={tripDetailStyles.name}>{item.destinationName}</Text>
@@ -112,15 +150,34 @@ const TripDetail = ({route, navigation}) => {
           {/*<Text style={tripDetailStyles.location}>*/}
           {/*  {'Địa điểm tập trung: ' + item.gatheringPlace}*/}
           {/*</Text>*/}
-          {/*<Text style={tripDetailStyles.location}>*/}
-          {/*  {'Ngày đến: ' + item.date}*/}
-          {/*</Text>*/}
-          {/*<Text style={tripDetailStyles.location}>*/}
-          {/*  {'Thời gian đến: ' + item.arriveTime}*/}
-          {/*</Text>*/}
-          {/*<Text style={tripDetailStyles.location}>*/}
-          {/*  {'Thời gian đi: ' + item.leavingTime}*/}
-          {/*</Text>*/}
+          {item.arrivedTime && (
+            <Text style={tripDetailStyles.location}>
+              {'Thời gian đến: ' +
+                new Date(item.arrivedTime).getHours() +
+                ':' +
+                new Date(item.arrivedTime).getMinutes() +
+                ' - ' +
+                new Date(item.arrivedTime).getDate() +
+                '/' +
+                (new Date(item.arrivedTime).getMonth() + 1) +
+                '/' +
+                new Date(item.arrivedTime).getFullYear()}
+            </Text>
+          )}
+          {item.leavingTime && (
+            <Text style={tripDetailStyles.location}>
+              {'Thời gian đi: ' +
+                new Date(item.leavingTime).getHours() +
+                ':' +
+                new Date(item.leavingTime).getMinutes() +
+                ' - ' +
+                new Date(item.leavingTime).getDate() +
+                '/' +
+                (new Date(item.leavingTime).getMonth() + 1) +
+                '/' +
+                new Date(item.leavingTime).getFullYear()}
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -134,6 +191,69 @@ const TripDetail = ({route, navigation}) => {
         <MaterialCommunityIcons name={'plus'} color={COLOR.white} size={25} />
       </TouchableOpacity>
     );
+  };
+
+  const renderDirection = () => {
+    if (!trip) {
+      return;
+    }
+    return trip.schedule.map((item, index) => {
+      if (index < trip.schedule.length - 1) {
+        let origin = {
+          latitude: item.latitude,
+          longitude: item.longitude,
+        };
+        let des = {
+          latitude: trip.schedule[index + 1].latitude,
+          longitude: trip.schedule[index + 1].longitude,
+        };
+        return (
+          <MapViewDirections
+            origin={origin}
+            destination={des}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={5}
+            strokeColor={COLOR.blue}
+          />
+        );
+      }
+      if (index === trip.schedule.length - 1) {
+        let origin = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        let des = {
+          latitude: trip.schedule[0].latitude,
+          longitude: trip.schedule[0].longitude,
+        };
+        return (
+          <MapViewDirections
+            origin={origin}
+            destination={des}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={5}
+            strokeColor={COLOR.blue}
+          />
+        );
+      }
+    });
+  };
+
+  const renderDestination = () => {
+    if (!trip) {
+      return;
+    }
+    return trip.schedule.map((item) => {
+      return (
+        <Marker
+          coordinate={{
+            latitude: item.latitude,
+            longitude: item.longitude,
+          }}
+          title={item.destinationName}
+        />
+      );
+    });
   };
 
   return (
@@ -152,8 +272,15 @@ const TripDetail = ({route, navigation}) => {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           }}
-          title={'Your Location'}
-        />
+          title={'Your Location'}>
+          <MaterialCommunityIcons
+            name={'circle-slice-8'}
+            size={20}
+            color={COLOR.blue}
+          />
+        </Marker>
+        {renderDirection()}
+        {renderDestination()}
       </MapView>
       <SlidingUpPanel
         ref={(c) => c}
@@ -249,4 +376,9 @@ const TripDetail = ({route, navigation}) => {
   );
 };
 
-export default TripDetail;
+const mapStateToProps = (state) => {
+  const getAllTripData = state.f02Reducer.getAllTrip;
+  return {getAllTripData};
+};
+
+export default connect(mapStateToProps, {})(TripDetail);

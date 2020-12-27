@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 // import MapViewDirections from 'react-native-maps-directions';
@@ -16,8 +16,10 @@ import addDestinationStyles from './AddDestinationStyles';
 import {connect} from 'react-redux';
 import {addDestination, getAllTrip} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
-import {STATUS} from '../../../constants';
-
+import {STATUS, SOCKET} from '../../../constants';
+import {Dialog} from '../../../commons';
+import {NAVIGATE_TO_TRIP_SCREEN} from '../../../navigations/routers';
+const socket = SOCKET.socket;
 // const origin = {latitude: 37.3318456, longitude: -122.0296002};
 // const destination = {latitude: 37.771707, longitude: -122.4053769};
 // const GOOGLE_MAPS_APIKEY = 'AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I';
@@ -35,6 +37,7 @@ const AddDestination = ({
   getAllTrip: _getAllTrip,
 }) => {
   const {tripId} = route.params;
+  const [isFirstTime, setIsFirstTime] = useState(true);
   const [latitude, setLatitude] = useState(37.78825);
   const [longitude, setLongitude] = useState(-122.4324);
   const [placeId, setPlaceId] = useState('');
@@ -42,6 +45,9 @@ const AddDestination = ({
   const [address, setAddress] = useState('');
   const [photos, setPhotos] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [message, setMessage] = useState('');
+  const [isDisplayDialog, setIsDisplayDialog] = useState(false);
+  const [errCode, setErrorCode] = useState('');
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -55,6 +61,38 @@ const AddDestination = ({
     });
   });
 
+  useEffect(() => {
+    if (isFirstTime) {
+      setIsFirstTime(false);
+      console.log(isFirstTime);
+      return;
+    }
+    if (getAllTripData.status === STATUS.SUCCESS) {
+      setMessage('Thêm địa điểm thành công');
+      setIsDisplayDialog(true);
+    }
+    if (getAllTripData.status === STATUS.ERROR) {
+      setErrorCode(getAllTripData.errorCode);
+      setMessage(getAllTripData.errorMessage);
+      setIsDisplayDialog(true);
+    }
+  }, [getAllTripData]);
+
+  useEffect(() => {
+    if (isFirstTime) {
+      setIsFirstTime(false);
+      return;
+    }
+    if (addDestinationData.status === STATUS.SUCCESS) {
+      _getAllTrip();
+    }
+    if (addDestinationData.status === STATUS.ERROR) {
+      setErrorCode(addDestinationData.errorCode);
+      setMessage(addDestinationData.errorMessage);
+      setIsDisplayDialog(true);
+    }
+  }, [addDestinationData]);
+
   const addDestination = () => {
     let destination = {
       groupId: tripId,
@@ -65,6 +103,7 @@ const AddDestination = ({
       longitude: longitude,
       photoReference: photos[0].photo_reference,
     };
+    socket.emit('room', {room: 'test-room'});
     _addDestination(destination);
   };
 
@@ -86,6 +125,23 @@ const AddDestination = ({
           source={{uri: itemUri}}
         />
       </View>
+    );
+  };
+
+  const renderDialog = () => {
+    return (
+      <Dialog
+        visible={isDisplayDialog}
+        isDisplayPositiveButton={true}
+        positiveButtonText={'Đóng'}
+        onPressPositiveButton={() => {
+          setIsDisplayDialog(false);
+          if (!errCode) {
+            navigation.navigate(NAVIGATE_TO_TRIP_SCREEN);
+          }
+        }}
+        renderContent={<Text>{message}</Text>}
+      />
     );
   };
 
@@ -124,15 +180,8 @@ const AddDestination = ({
             longitude: longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
-          }}>
-          <Marker
-            coordinate={{
-              latitude: latitude,
-              longitude: longitude,
-            }}
-            title={'Your Location'}
-          />
-        </MapView>
+          }}
+        />
         {name && (
           <View style={addDestinationStyles.infoView}>
             <FlatList
@@ -154,6 +203,7 @@ const AddDestination = ({
           </View>
         )}
       </GooglePlacesAutocomplete>
+      {renderDialog()}
     </View>
   );
 };

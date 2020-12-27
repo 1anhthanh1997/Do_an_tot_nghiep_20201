@@ -1,4 +1,6 @@
 const {Group} = require('../models/groups');
+const {User} = require('../models/user');
+const io = require('../../server').io
 const bcrypt = require('bcrypt');
 const randomString = require('randomstring')
 const nodeMailer = require('nodemailer')
@@ -119,6 +121,25 @@ exports.createTrip = async (req, res) => {
             members: member
         })
         await trip.save()
+
+        // io.on('connection', (socket) => {
+        //     console.log('New WebSocket connection')
+        //     socket.on('room', data => {
+        //         console.log('room join');
+        //         console.log(data);
+        //         socket.join(data.room);
+        //         socket.emit('room', {room: 'Hello'});
+        //     });
+        // })
+        // let user = await User.findOne({username:req.user.username})
+        // let notification={
+        //     groupId:req.body.groupId,
+        //     groupName:req.body.groupName,
+        //     content:'đã tạo nhóm',
+        //     time:new Date()
+        // }
+        // user.notification.unshift(notification)
+        // await user.save()
         res.send(trip)
     } catch (e) {
         console.log(e)
@@ -127,8 +148,25 @@ exports.createTrip = async (req, res) => {
 
 exports.editTrip = async (req, res) => {
     try {
-        console.log(req.params.id)
         let editedTrip = await Group.updateOne({_id: req.params.id}, req.body)
+        let trip = await Group.findOne({_id: req.params.id})
+        if (trip.members) {
+            await trip.members.map(async (item) => {
+                if (item !== req.user.username) {
+                    console.log(item)
+                    let user = await User.findOne({username: item})
+                    let notification = {
+                        groupId: req.body.groupId,
+                        groupName: req.body.groupName,
+                        owner: req.user.username,
+                        content: 'đã chỉnh sửa chuyến đi',
+                        time: new Date()
+                    }
+                    user.notification.unshift(notification)
+                    await user.save()
+                }
+            })
+        }
         res.status(200).send(editedTrip)
 
     } catch (e) {
@@ -157,7 +195,7 @@ exports.joinTrip = async (req, res) => {
     }
 }
 
-exports.addDestination = async (req, res) => {
+exports.addDestination = async (req, res, socket) => {
     try {
         console.log(req.params.groupId)
         let chosenGroup = await Group.findOne({groupId: req.params.groupId})
@@ -166,13 +204,32 @@ exports.addDestination = async (req, res) => {
         let flag = true
         await chosenGroup.schedule.map((item) => {
             if (item.destinationId === destination.destinationId) {
-                flag=false
+                flag = false
             }
         })
-        if(flag){
+        if (flag) {
             await chosenGroup.schedule.push(destination)
         }
         await chosenGroup.save()
+
+        if (chosenGroup.members) {
+            await chosenGroup.members.map(async (item) => {
+                if (item !== req.user.username) {
+                    console.log(item)
+                    let user = await User.findOne({username: item})
+                    let notification = {
+                        groupId: req.body.groupId,
+                        groupName: req.body.groupName,
+                        owner: req.user.username,
+                        content: 'đã chỉnh thêm điểm đến của chuyến đi',
+                        time: new Date()
+                    }
+                    user.notification.unshift(notification)
+                    await user.save()
+                }
+            })
+
+        }
         res.send(chosenGroup)
     } catch (e) {
         console.log(e)
@@ -185,17 +242,62 @@ exports.editDestination = async (req, res) => {
         let destination = req.body
         delete destination.groupId
 
-        await chosenGroup.schedule.map((item,index) => {
+        await chosenGroup.schedule.map((item, index) => {
             if (item.destinationId === destination.destinationId) {
-                chosenGroup.schedule[index]=destination
+                console.log(index)
+                chosenGroup.schedule[index] = destination
             }
         })
+        console.log(chosenGroup.schedule)
+        await chosenGroup.save()
+        if (chosenGroup.members) {
+            await chosenGroup.members.map(async (item) => {
+                if (item !== req.user.username) {
+                    console.log(item)
+                    let user = await User.findOne({username: item})
+                    let notification = {
+                        groupId: req.body.groupId,
+                        groupName: req.body.groupName,
+                        owner: req.user.username,
+                        content: 'đã chỉnh sửa điểm đến của chuyến đi',
+                        time: new Date()
+                    }
+                    user.notification.unshift(notification)
+                    await user.save()
+                }
+            })
+        }
+        res.send(chosenGroup)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.createWarning = async (req, res) => {
+    try {
+        console.log(req.params.groupId)
+        let chosenGroup = await Group.findOne({groupId: req.params.groupId})
+        let destination = req.body
+        delete destination.groupId
+
+        await chosenGroup.schedule.map((item, index) => {
+            if (item.destinationId === destination.destinationId) {
+                console.log(index)
+                chosenGroup.schedule[index] = destination
+            }
+        })
+        console.log(chosenGroup.schedule)
         await chosenGroup.save()
         res.send(chosenGroup)
     } catch (e) {
         console.log(e)
     }
 }
+
+
+
+
+
 
 
 

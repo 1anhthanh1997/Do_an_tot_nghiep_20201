@@ -23,7 +23,7 @@ import {
   ADD_DESTINATION_SUCCESS,
   ADD_DESTINATION_LOADING,
   ADD_DESTINATION_FAIL,
-  EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_LOADING,
+  EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_LOADING, EDIT_DESTINATION_FAIL,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -295,7 +295,7 @@ const f02Reducer = (info = initUserInfo, action) => {
           status: STATUS.LOADING,
         },
       };
-    case EDIT_TRIP_FAIL:
+    case EDIT_DESTINATION_FAIL:
       return {
         ...info,
         editDestination: {

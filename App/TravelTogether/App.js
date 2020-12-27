@@ -2,6 +2,7 @@ import React from 'react';
 import RootNavigator from './src/navigations/RootNavigator';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
+import {LogBox} from 'react-native';
 
 import allReducers from './src/store/f01/reducers';
 // import MovieContainer from './containers/MovieContainer';
@@ -9,6 +10,7 @@ import allReducers from './src/store/f01/reducers';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './src/store/f01/sagas/RootSaga';
 // import logger from 'redux-logger';
+LogBox.ignoreLogs(['currentlyFocusedField']);
 
 const sagaMiddleware = createSagaMiddleware();
 

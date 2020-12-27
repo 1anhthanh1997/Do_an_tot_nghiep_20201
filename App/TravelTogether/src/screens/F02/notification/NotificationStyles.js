@@ -68,6 +68,10 @@ const notificationStyles = StyleSheet.create({
   thirdChildView: {
     width: '10%',
   },
+  groupName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });
 
 export default notificationStyles;

@@ -39,7 +39,7 @@ import {
   ADD_DESTINATION_SUCCESS,
   ADD_DESTINATION_FAIL,
   ADD_DESTINATION,
-  EDIT_DESTINATION,
+  EDIT_DESTINATION, EDIT_DESTINATION_LOADING, EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_FAIL,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -258,16 +258,16 @@ function* addDestination(destination) {
 
 function* editDestination(destination) {
   try {
-    yield put({type: ADD_DESTINATION_LOADING, payload: ''});
+    yield put({type: EDIT_DESTINATION_LOADING, payload: ''});
     console.log(destination.payload);
-    const res = yield Api.callAddDestination(destination.payload);
+    const res = yield Api.callEditDestination(destination.payload);
     console.log('Hello');
     console.log(res);
-    yield put({type: ADD_DESTINATION_SUCCESS, payload: res});
+    yield put({type: EDIT_DESTINATION_SUCCESS, payload: res});
   } catch (e) {
     console.log(e.response);
     yield put({
-      type: ADD_DESTINATION_FAIL,
+      type: EDIT_DESTINATION_FAIL,
       payload: {
         errorCode: 'EC0004',
         errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',

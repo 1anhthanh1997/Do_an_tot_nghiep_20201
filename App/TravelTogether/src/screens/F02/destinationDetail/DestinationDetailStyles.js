@@ -47,11 +47,29 @@ const destinationDetailStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLOR.black,
   },
-  textInput: {
+  activitiesView: {
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  textInput: {
+    width: '90%',
     height: 45,
-    borderBottomWidth: 1,
-    borderBottomColor: COLOR.black,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: COLOR.stone,
+    backgroundColor: COLOR.white,
+    // marginTop: 10,
+  },
+  plusTouchable: {
+    marginLeft: 5,
+    height: 40,
+    width: 40,
+    // backgroundColor: COLOR.white,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTouchable: {
     width: '100%',
@@ -111,6 +129,19 @@ const destinationDetailStyles = StyleSheet.create({
     fontSize: 16,
     color: COLOR.dark_gray,
     marginLeft: 5,
+  },
+  activityItemView: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingTop: 5,
+    paddingBottom: 5,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: COLOR.gray,
+  },
+  activityItemText: {
+    fontSize: 14,
+    color: COLOR.dark_gray,
   },
 });
 export default destinationDetailStyles;

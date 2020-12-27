@@ -4,6 +4,7 @@ import {ASYNC_STORAGE} from '../constants';
 
 // const baseUrl = 'https://open-drone-map.herokuapp.com';
 const baseUrl = 'http://192.168.55.108:3000';
+// const baseUrl = 'http://192.168.43.182:3000';
 
 const getApi = async (lastUrl) => {
   const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
