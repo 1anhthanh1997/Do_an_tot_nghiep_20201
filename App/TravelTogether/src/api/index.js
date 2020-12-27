@@ -62,6 +62,23 @@ const userPostApi = async (lastUrl, data) => {
   return response;
 };
 
+const uploadImagePostApi = async (lastUrl, data) => {
+  console.log(data);
+  const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);
+  const response = await axios({
+    method: 'post',
+    url: baseUrl + lastUrl,
+    headers: {
+      Authorization: 'Bearer ' + token,
+      'Content-Type': 'multipart/form-data',
+    },
+    data: data,
+  });
+  // const responseData = response.data;
+  // console.log(response);
+  return response;
+};
+
 const patchApi = async (lastUrl, data) => {
   console.log('ok');
   const token = await AsyncStorage.getItem(ASYNC_STORAGE.ACCESS_TOKEN);

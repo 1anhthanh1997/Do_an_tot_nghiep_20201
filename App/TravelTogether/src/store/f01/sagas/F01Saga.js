@@ -39,7 +39,13 @@ import {
   ADD_DESTINATION_SUCCESS,
   ADD_DESTINATION_FAIL,
   ADD_DESTINATION,
-  EDIT_DESTINATION, EDIT_DESTINATION_LOADING, EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_FAIL,
+  EDIT_DESTINATION,
+  EDIT_DESTINATION_LOADING,
+  EDIT_DESTINATION_SUCCESS,
+  EDIT_DESTINATION_FAIL,
+  UPLOAD_IMAGE_LOADING,
+  UPLOAD_IMAGE_SUCCESS,
+  UPLOAD_IMAGE_FAIL, UPLOAD_IMAGE,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -115,6 +121,26 @@ function* changePersonalInformation(data) {
     console.log(e.response);
     yield put({
       type: CHANGE_PERSONAL_INFORMATION_FAIL,
+      payload: {
+        errorCode: 'EC0003',
+        errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+      },
+    });
+  }
+}
+
+function* uploadImage(data) {
+  try {
+    yield put({type: UPLOAD_IMAGE_LOADING, payload: ''});
+    const res = yield Api.callUploadImage(data.payload);
+    console.log('Hello');
+    console.log(res);
+    yield put({type: UPLOAD_IMAGE_SUCCESS, payload: res});
+    yield put({type: LOGIN_SUCCESS, payload: res});
+  } catch (e) {
+    console.log(e.response);
+    yield put({
+      type: UPLOAD_IMAGE_FAIL,
       payload: {
         errorCode: 'EC0003',
         errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại.',
@@ -280,6 +306,7 @@ export function* watchLogin() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(REGISTER, register);
   yield takeLatest(CHANGE_PERSONAL_INFORMATION, changePersonalInformation);
+  yield takeLatest(UPLOAD_IMAGE, uploadImage);
   yield takeLatest(CHANGE_PASSWORD, changePassword);
   yield takeLatest(GET_ALL_TRIP, getAllTrip);
   yield takeLatest(CREATE_TRIP, createTrip);

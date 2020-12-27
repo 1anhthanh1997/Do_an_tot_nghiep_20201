@@ -111,6 +111,17 @@ const tripDetailStyles = StyleSheet.create({
     bottom: 40,
     right: 25,
   },
+  secondFloatButton: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: COLOR.blue,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 100,
+    right: 25,
+  },
 });
 
 export default tripDetailStyles;

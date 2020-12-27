@@ -39,6 +39,16 @@ function* callRegister(data) {
   return userInfo;
 }
 
+function* callUploadImage(data) {
+  console.log('Call');
+  const response = yield userPostApi(registerUrl, data);
+  console.log(response);
+  const imageLink = yield response.status === 200 || response.status === 201
+    ? response.data
+    : null;
+  return imageLink;
+}
+
 function* callChangePersonalInformation(data) {
   console.log(data);
   const response = yield patchApi(changePersonalInformationUrl, data);
@@ -123,6 +133,7 @@ export const Api = {
   callLogin,
   callRegister,
   callChangePersonalInformation,
+  callUploadImage,
   callChangePassword,
   callGetAllTrip,
   callCreateTrip,

@@ -23,7 +23,12 @@ import {
   ADD_DESTINATION_SUCCESS,
   ADD_DESTINATION_LOADING,
   ADD_DESTINATION_FAIL,
-  EDIT_DESTINATION_SUCCESS, EDIT_DESTINATION_LOADING, EDIT_DESTINATION_FAIL,
+  EDIT_DESTINATION_SUCCESS,
+  EDIT_DESTINATION_LOADING,
+  EDIT_DESTINATION_FAIL,
+  UPLOAD_IMAGE_SUCCESS,
+  UPLOAD_IMAGE_LOADING,
+  UPLOAD_IMAGE_FAIL,
 } from '../actions/actionTypes';
 
 import {STATUS} from '../../../constants';
@@ -32,6 +37,12 @@ const initUserInfo = {
   changePersonalInformation: {
     status: STATUS.DEFAULT,
     changePersonalInformationResultData: {},
+    errorCode: '',
+    errorMessage: '',
+  },
+  uploadImage: {
+    status: STATUS.DEFAULT,
+    uploadImageResultData: {},
     errorCode: '',
     errorMessage: '',
   },
@@ -106,6 +117,30 @@ const f02Reducer = (info = initUserInfo, action) => {
       return {
         ...info,
         changePersonalInformation: {
+          status: STATUS.ERROR,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case UPLOAD_IMAGE_SUCCESS:
+      return {
+        ...info,
+        uploadImage: {
+          status: STATUS.SUCCESS,
+          uploadImageResultData: action.payload,
+        },
+      };
+    case UPLOAD_IMAGE_LOADING:
+      return {
+        ...info,
+        uploadImage: {
+          status: STATUS.LOADING,
+        },
+      };
+    case UPLOAD_IMAGE_FAIL:
+      return {
+        ...info,
+        uploadImage: {
           status: STATUS.ERROR,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage,

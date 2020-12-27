@@ -10,6 +10,7 @@ import {
   GET_MEMBER_INFO,
   ADD_DESTINATION,
   EDIT_DESTINATION,
+  UPLOAD_IMAGE,
 } from './actionTypes';
 
 const login = (data) => {
@@ -22,6 +23,13 @@ const login = (data) => {
 const register = (data) => {
   return {
     type: REGISTER,
+    payload: data,
+  };
+};
+
+const uploadImage = (data) => {
+  return {
+    type: UPLOAD_IMAGE,
     payload: data,
   };
 };
@@ -92,6 +100,7 @@ export {
   login,
   register,
   changePersonalInformation,
+  uploadImage,
   changePassword,
   getAllTrip,
   createTrip,

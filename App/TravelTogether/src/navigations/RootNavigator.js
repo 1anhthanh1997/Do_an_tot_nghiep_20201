@@ -23,6 +23,7 @@ import {
   NAVIGATE_TO_MEMBER_INFO,
   NAVIGATE_TO_ADD_DESTINATION,
   NAVIGATE_TO_DESTINATION_DETAIL,
+  NAVIGATE_TO_SEND_WARNING,
 } from './routers';
 import {
   Login,
@@ -43,6 +44,7 @@ import {
   MemberInfo,
   AddDestination,
   DestinationDetail,
+  SendWarning,
 } from '../screens';
 import {COLOR} from '../constants';
 
@@ -130,6 +132,15 @@ const addDestinationOption = {
 const destinationDetailOption = {
   // headerShown: false,
   headerTitle: 'Thông tin điểm đến',
+  headerStyle: {
+    backgroundColor: COLOR.blue,
+  },
+  headerTintColor: COLOR.white,
+};
+
+const sendWarningOption = {
+  // headerShown: false,
+  headerTitle: 'Gửi cảnh báo',
   headerStyle: {
     backgroundColor: COLOR.blue,
   },
@@ -274,6 +285,11 @@ const RootNavigator = () => {
           name={NAVIGATE_TO_DESTINATION_DETAIL}
           component={DestinationDetail}
           options={destinationDetailOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_SEND_WARNING}
+          component={SendWarning}
+          options={sendWarningOption}
         />
       </Stack.Navigator>
     </NavigationContainer>

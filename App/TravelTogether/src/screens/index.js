@@ -16,6 +16,7 @@ import TripMember from './F02/tripMember/TripMember';
 import MemberInfo from './F02/memberInfo/MemberInfo';
 import AddDestination from './F02/addDestination/AddDestination';
 import DestinationDetail from './F02/destinationDetail/DestinationDetail';
+import SendWarning from './F02/sendWarning/SendWarning';
 
 export {
   Login,
@@ -36,4 +37,5 @@ export {
   MemberInfo,
   AddDestination,
   DestinationDetail,
+  SendWarning,
 };

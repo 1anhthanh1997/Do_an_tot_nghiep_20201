@@ -20,7 +20,7 @@ import {
   NAVIGATE_TO_ARRANGE_PLACE,
   NAVIGATE_TO_CREATE_TRIP,
   NAVIGATE_TO_DESTINATION_DETAIL,
-  NAVIGATE_TO_EDIT_TRIP,
+  NAVIGATE_TO_EDIT_TRIP, NAVIGATE_TO_SEND_WARNING,
   NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
 import MapViewDirections from 'react-native-maps-directions';
@@ -28,6 +28,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {connect} from 'react-redux';
 import {getMemberInfo} from '../../../store/f01/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import tripStyles from '../trip/TripStyles';
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDBc0TE31eWVGLPKYOiddYjratfBiJRD1I';
 const socket = SOCKET.socket;
 
@@ -127,6 +128,10 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
     redirectToScreen(NAVIGATE_TO_ADD_DESTINATION, {tripId: trip.groupId});
   };
 
+  const onPressSecondFloatButton = () => {
+    redirectToScreen(NAVIGATE_TO_SEND_WARNING, {tripId: trip.groupId});
+  };
+
   const renderPlaceItem = ({item}) => {
     let itemUri =
       'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' +
@@ -189,6 +194,19 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
         style={tripDetailStyles.floatButton}
         onPress={onPressFloatButton}>
         <MaterialCommunityIcons name={'plus'} color={COLOR.white} size={25} />
+      </TouchableOpacity>
+    );
+  };
+  const renderSecondFloatButton = () => {
+    return (
+      <TouchableOpacity
+        style={tripDetailStyles.secondFloatButton}
+        onPress={onPressSecondFloatButton}>
+        <MaterialCommunityIcons
+          name={'alert-circle-outline'}
+          color={COLOR.white}
+          size={25}
+        />
       </TouchableOpacity>
     );
   };
@@ -371,6 +389,7 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
           </ScrollView>
         </View>
       </SlidingUpPanel>
+      {renderSecondFloatButton()}
       {renderFloatButton()}
     </View>
   );
