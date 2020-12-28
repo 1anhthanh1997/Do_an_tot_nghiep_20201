@@ -1,6 +1,7 @@
 import {
   getApi,
   postApi,
+  uploadImagePostApi,
   userPostApi,
   patchApi,
   secondPatchApi,
@@ -18,6 +19,7 @@ const joinTripUrl = '/joinTrip/';
 const getMemberInfoUrl = '/memberInfo/';
 const addDestinationUrl = '/addDestination/';
 const editDestinationUrl = '/editDestination/';
+const uploadImageUrl = '/upload';
 
 function* callLogin(data) {
   console.log('Call');
@@ -41,7 +43,12 @@ function* callRegister(data) {
 
 function* callUploadImage(data) {
   console.log('Call');
-  const response = yield userPostApi(registerUrl, data);
+  // let data = {
+  //   file: 'data:image/jpg;base64,' + response.data,
+  //   upload_preset: "my_preset_name",
+  // }
+
+  const response = yield uploadImagePostApi(uploadImageUrl, data);
   console.log(response);
   const imageLink = yield response.status === 200 || response.status === 201
     ? response.data

@@ -9,6 +9,7 @@ import {
 import {COLOR, IMG} from '../../../constants';
 import personalStyles from './PersonalStyles';
 import {Dialog} from '../../../commons';
+import {connect} from 'react-redux';
 
 const personalListData = [
   {
@@ -31,7 +32,7 @@ const personalListData = [
   },
 ];
 
-const Personal = ({navigation}) => {
+const Personal = ({navigation, loginData}) => {
   const [isDisplayDialog, setIsDisplayDialog] = useState(false);
 
   const navigateToScreen = (name) => {
@@ -75,7 +76,14 @@ const Personal = ({navigation}) => {
   const renderHeader = () => {
     return (
       <View style={personalStyles.headView}>
-        <Image source={IMG.defaultAvatar} style={personalStyles.avatar} />
+        <Image
+          source={
+            loginData.loginResultData.avatarLink
+              ? {uri: loginData.loginResultData.avatarLink}
+              : IMG.defaultAvatar
+          }
+          style={personalStyles.avatar}
+        />
       </View>
     );
   };
@@ -119,4 +127,9 @@ const Personal = ({navigation}) => {
     </View>
   );
 };
-export default Personal;
+const mapStateToProps = (state) => {
+  const loginData = state.f01Reducer.login;
+  return {loginData};
+};
+
+export default connect(mapStateToProps, {})(Personal);

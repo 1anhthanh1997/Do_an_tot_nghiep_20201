@@ -45,7 +45,8 @@ import {
   EDIT_DESTINATION_FAIL,
   UPLOAD_IMAGE_LOADING,
   UPLOAD_IMAGE_SUCCESS,
-  UPLOAD_IMAGE_FAIL, UPLOAD_IMAGE,
+  UPLOAD_IMAGE_FAIL,
+  UPLOAD_IMAGE,
 } from '../actions/actionTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ASYNC_STORAGE} from '../../../constants';
@@ -113,10 +114,9 @@ function* changePersonalInformation(data) {
   try {
     yield put({type: CHANGE_PERSONAL_INFORMATION_LOADING, payload: ''});
     const res = yield Api.callChangePersonalInformation(data.payload);
-    console.log('Hello');
+    console.log('Hello2');
     console.log(res);
     yield put({type: CHANGE_PERSONAL_INFORMATION_SUCCESS, payload: res});
-    yield put({type: LOGIN_SUCCESS, payload: res});
   } catch (e) {
     console.log(e.response);
     yield put({
@@ -132,11 +132,12 @@ function* changePersonalInformation(data) {
 function* uploadImage(data) {
   try {
     yield put({type: UPLOAD_IMAGE_LOADING, payload: ''});
+    console.log('Loading');
     const res = yield Api.callUploadImage(data.payload);
     console.log('Hello');
     console.log(res);
     yield put({type: UPLOAD_IMAGE_SUCCESS, payload: res});
-    yield put({type: LOGIN_SUCCESS, payload: res});
+    // console.log('Hi');
   } catch (e) {
     console.log(e.response);
     yield put({

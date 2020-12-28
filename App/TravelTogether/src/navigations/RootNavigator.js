@@ -185,6 +185,11 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
+        name={NAVIGATE_TO_PERSONAL_SCREEN}
+        component={Personal}
+        options={tabPersonalOption}
+      />
+      <Tab.Screen
         name={NAVIGATE_TO_TRIP_SCREEN}
         component={Trip}
         options={tabTripOption}
@@ -198,11 +203,6 @@ const BottomTabNavigation = () => {
         name={NAVIGATE_TO_NOTIFICATION_SCREEN}
         component={Notification}
         options={tabNotificationOption}
-      />
-      <Tab.Screen
-        name={NAVIGATE_TO_PERSONAL_SCREEN}
-        component={Personal}
-        options={tabPersonalOption}
       />
     </Tab.Navigator>
   );

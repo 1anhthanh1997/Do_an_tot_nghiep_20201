@@ -19,14 +19,20 @@ import personalInformationStyles from './PersonalInformationStyles';
 import {Dialog} from '../../../commons';
 import {connect} from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
-import {changePersonalInformation} from '../../../store/f01/actions';
+import {
+  changePersonalInformation,
+  uploadImage,
+} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
+import f02Reducer from '../../../store/f01/reducers/F02Reducer';
 
 const PersonalInformation = ({
   navigation,
   loginData,
   changePersonalInformationData,
+  uploadImageData,
   changePersonalInformation: _changePersonalInformation,
+  uploadImage: _uploadImage,
 }) => {
   const options = {
     title: 'Select Avatar',
@@ -53,12 +59,14 @@ const PersonalInformation = ({
     loginData.loginResultData.email,
     loginData.loginResultData.phoneNumber,
   ]);
-  const [avatarSource, setAvatarSource] = useState('');
+  const [avatar, setAvatar] = useState(loginData.loginResultData.avatarLink);
+  const [imageData, setImageData] = useState('');
   const [errCode, setErrorCode] = useState('');
   const [message, setMessage] = useState('');
   const [isFirstLogin, setIsFirstLogin] = useState(true);
 
   useEffect(() => {
+    // console.log(changePersonalInformationData.status);
     if (isFirstLogin) {
       setIsFirstLogin(false);
       return;
@@ -77,6 +85,30 @@ const PersonalInformation = ({
     }
   }, [changePersonalInformationData]);
 
+  useEffect(() => {
+    console.log(uploadImageData.status);
+    console.log(isFirstLogin);
+    if (isFirstLogin) {
+      setIsFirstLogin(false);
+      return;
+    }
+    if (uploadImageData.status === STATUS.SUCCESS) {
+      console.log('Change Info');
+      let data = {
+        name: valueData[0],
+        email: valueData[1],
+        phoneNumber: valueData[2],
+        avatarLink: uploadImageData.uploadImageResultData.avatarLink,
+      };
+      _changePersonalInformation(data);
+    }
+    if (uploadImageData.status === STATUS.ERROR) {
+      setErrorCode(uploadImageData.errorCode);
+      setMessage(uploadImageData.errorMessage);
+      setIsDisplayDialog(true);
+    }
+  }, [uploadImageData]);
+
   const navigateToScreen = (name) => {
     navigation.navigate(name);
   };
@@ -87,7 +119,7 @@ const PersonalInformation = ({
 
   const onPressChooseImage = () => {
     ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
+      console.log(response);
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -100,19 +132,39 @@ const PersonalInformation = ({
 
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+        const image = {
+          path: response.path,
+          uri: response.uri,
+          width: response.width,
+          height: response.height,
+          type: response.type,
+          name: response.fileName,
+        };
 
-        setAvatarSource(source);
+        setImageData(image);
+        setAvatar(response.uri);
       }
     });
+    // ImagePicker.openPicker({
+    //   width: 300,
+    //   height: 400,
+    //   cropping: true
+    // }).then((image) => {
+    //   console.log(image);
+    // });
   };
 
   const onPressUpdate = () => {
-    let data = {
-      name: valueData[0],
-      email: valueData[1],
-      phoneNumber: valueData[2],
+    let image = new FormData();
+    const editData = {
+      uri: imageData.uri,
+      height: imageData.height,
+      width: imageData.width,
+      type: imageData.type,
+      name: imageData.name,
     };
-    _changePersonalInformation(data);
+    image.append('avatar', editData);
+    _uploadImage(image);
   };
 
   const onChangeInfo = (value, index) => {
@@ -139,7 +191,7 @@ const PersonalInformation = ({
     return (
       <View style={personalInformationStyles.headView}>
         <Image
-          source={avatarSource ? {uri: avatarSource.uri} : IMG.defaultAvatar}
+          source={avatar ? {uri: avatar} : IMG.defaultAvatar}
           style={personalInformationStyles.avatar}
         />
         <TouchableOpacity
@@ -195,7 +247,10 @@ const PersonalInformation = ({
   return (
     <View style={personalInformationStyles.screenView}>
       <LoadingView
-        visible={changePersonalInformationData.status === STATUS.LOADING}
+        visible={
+          changePersonalInformationData.status === STATUS.LOADING ||
+          uploadImageData.status === STATUS.LOADING
+        }
       />
       {renderHeader()}
       {renderBody()}
@@ -209,9 +264,11 @@ const mapStateToProps = (state) => {
   const loginData = state.f01Reducer.login;
   const changePersonalInformationData =
     state.f02Reducer.changePersonalInformation;
-  return {loginData, changePersonalInformationData};
+  const uploadImageData = state.f02Reducer.uploadImage;
+  return {loginData, changePersonalInformationData, uploadImageData};
 };
 
-export default connect(mapStateToProps, {changePersonalInformation})(
-  PersonalInformation,
-);
+export default connect(mapStateToProps, {
+  changePersonalInformation,
+  uploadImage,
+})(PersonalInformation);
