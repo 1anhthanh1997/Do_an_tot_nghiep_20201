@@ -11,6 +11,7 @@ import {
   ADD_DESTINATION,
   EDIT_DESTINATION,
   UPLOAD_IMAGE,
+  GET_MEMBER_LIST,
 } from './actionTypes';
 
 const login = (data) => {
@@ -96,6 +97,13 @@ const editDestination = (data) => {
   };
 };
 
+const getMemberList = (data) => {
+  return {
+    type: GET_MEMBER_LIST,
+    payload: data,
+  };
+};
+
 export {
   login,
   register,
@@ -109,4 +117,5 @@ export {
   getMemberInfo,
   addDestination,
   editDestination,
+  getMemberList,
 };

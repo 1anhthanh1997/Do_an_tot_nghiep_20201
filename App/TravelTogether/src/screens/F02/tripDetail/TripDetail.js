@@ -20,7 +20,8 @@ import {
   NAVIGATE_TO_ARRANGE_PLACE,
   NAVIGATE_TO_CREATE_TRIP,
   NAVIGATE_TO_DESTINATION_DETAIL,
-  NAVIGATE_TO_EDIT_TRIP, NAVIGATE_TO_SEND_WARNING,
+  NAVIGATE_TO_EDIT_TRIP,
+  NAVIGATE_TO_SEND_WARNING,
   NAVIGATE_TO_TRIP_MEMBER,
 } from '../../../navigations/routers';
 import MapViewDirections from 'react-native-maps-directions';
@@ -98,7 +99,8 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
 
   useEffect(() => {
     // console.log(trip.startDate);
-    setInterval(getLocation, 20000);
+    getLocation();
+    // setInterval(getLocation, 20000);
   }, []);
 
   const redirectToScreen = (name, params) => {
@@ -120,7 +122,7 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
         // See error code charts below.
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000000},
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 100000000000},
     );
   };
 
@@ -227,6 +229,7 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
         };
         return (
           <MapViewDirections
+            key={index.toString()}
             origin={origin}
             destination={des}
             apikey={GOOGLE_MAPS_APIKEY}
@@ -246,6 +249,7 @@ const TripDetail = ({route, navigation, getAllTripData}) => {
         };
         return (
           <MapViewDirections
+            key={index.toString()}
             origin={origin}
             destination={des}
             apikey={GOOGLE_MAPS_APIKEY}

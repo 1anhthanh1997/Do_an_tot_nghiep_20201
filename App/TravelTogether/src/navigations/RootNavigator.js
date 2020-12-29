@@ -24,6 +24,7 @@ import {
   NAVIGATE_TO_ADD_DESTINATION,
   NAVIGATE_TO_DESTINATION_DETAIL,
   NAVIGATE_TO_SEND_WARNING,
+  NAVIGATE_TO_HOME_DETAIL,
 } from './routers';
 import {
   Login,
@@ -45,6 +46,7 @@ import {
   AddDestination,
   DestinationDetail,
   SendWarning,
+  HomeDetail,
 } from '../screens';
 import {COLOR} from '../constants';
 
@@ -139,12 +141,12 @@ const destinationDetailOption = {
 };
 
 const sendWarningOption = {
-  // headerShown: false,
-  headerTitle: 'Gửi cảnh báo',
-  headerStyle: {
-    backgroundColor: COLOR.blue,
-  },
-  headerTintColor: COLOR.white,
+  headerShown: false,
+  // headerTitle: 'Gửi cảnh báo',
+  // headerStyle: {
+  //   backgroundColor: COLOR.blue,
+  // },
+  // headerTintColor: COLOR.white,
 };
 
 const tripDetailOption = {
@@ -185,11 +187,6 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name={NAVIGATE_TO_PERSONAL_SCREEN}
-        component={Personal}
-        options={tabPersonalOption}
-      />
-      <Tab.Screen
         name={NAVIGATE_TO_TRIP_SCREEN}
         component={Trip}
         options={tabTripOption}
@@ -203,6 +200,11 @@ const BottomTabNavigation = () => {
         name={NAVIGATE_TO_NOTIFICATION_SCREEN}
         component={Notification}
         options={tabNotificationOption}
+      />
+      <Tab.Screen
+        name={NAVIGATE_TO_PERSONAL_SCREEN}
+        component={Personal}
+        options={tabPersonalOption}
       />
     </Tab.Navigator>
   );
@@ -289,6 +291,11 @@ const RootNavigator = () => {
         <Stack.Screen
           name={NAVIGATE_TO_SEND_WARNING}
           component={SendWarning}
+          options={sendWarningOption}
+        />
+        <Stack.Screen
+          name={NAVIGATE_TO_HOME_DETAIL}
+          component={HomeDetail}
           options={sendWarningOption}
         />
       </Stack.Navigator>

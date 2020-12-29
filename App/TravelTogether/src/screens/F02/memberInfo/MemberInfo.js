@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Linking,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -21,6 +22,7 @@ import {connect} from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
 import {changePersonalInformation} from '../../../store/f01/actions';
 import LoadingView from '../../../commons/loadingView/LoadingView';
+import {white} from '../../../constants/Color';
 
 const MemberInfo = ({
   navigation,
@@ -55,7 +57,7 @@ const MemberInfo = ({
     info.email,
     info.phoneNumber,
   ]);
-  const [avatarSource, setAvatarSource] = useState('');
+  const [avatarSource, setAvatarSource] = useState(info.avatarLink);
   const [errCode, setErrorCode] = useState('');
   const [message, setMessage] = useState('');
   const [isFirstLogin, setIsFirstLogin] = useState(true);
@@ -109,6 +111,14 @@ const MemberInfo = ({
     });
   };
 
+  const onPressCall = () => {
+    Linking.openURL(`tel:${valueData[2]}`);
+  };
+
+  const onPressMessage = () => {
+    Linking.openURL(`sms:?body=Mã nhóm của bạn là: ${valueData[2]}`);
+  };
+
   const renderPersonalInformationItem = ({item, index}) => {
     return (
       <View style={memberInfoStyles.personalInformationItemView}>
@@ -122,7 +132,7 @@ const MemberInfo = ({
     return (
       <View style={memberInfoStyles.headView}>
         <Image
-          source={avatarSource ? {uri: avatarSource.uri} : IMG.defaultAvatar}
+          source={avatarSource ? {uri: avatarSource} : IMG.defaultAvatar}
           style={memberInfoStyles.avatar}
         />
       </View>
@@ -155,6 +165,31 @@ const MemberInfo = ({
     );
   };
 
+  const renderButton = () => {
+    return (
+      <View style={memberInfoStyles.buttonView}>
+        <TouchableOpacity
+          style={memberInfoStyles.buttonTouchable}
+          onPress={onPressCall}>
+          <MaterialCommunityIcons
+            name={'phone'}
+            size={30}
+            color={COLOR.white}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={memberInfoStyles.secondButtonTouchable}
+          onPress={onPressMessage}>
+          <MaterialCommunityIcons
+            name={'message'}
+            size={30}
+            color={COLOR.white}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={memberInfoStyles.screenView}>
       <LoadingView
@@ -162,6 +197,7 @@ const MemberInfo = ({
       />
       {renderHeader()}
       {renderBody()}
+      {renderButton()}
       {renderDialog()}
     </View>
   );

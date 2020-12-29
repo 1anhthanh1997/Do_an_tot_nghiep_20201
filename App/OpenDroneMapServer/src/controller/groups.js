@@ -294,6 +294,23 @@ exports.createWarning = async (req, res) => {
     }
 }
 
+exports.getMemberList = async (req, res) => {
+    try {
+        let chosenGroup = await Group.findOne({groupId: req.params.groupId})
+        let memberList=[];
+        await chosenGroup.members.map(async (item, index) => {
+           let memberInfo= await User.findOne({username:item})
+            memberList.push(memberInfo)
+        })
+        console.log(memberList)
+        await chosenGroup.save()
+        res.send(memberList)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
 
 
 

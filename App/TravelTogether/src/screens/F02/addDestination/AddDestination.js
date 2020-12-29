@@ -157,7 +157,8 @@ const AddDestination = ({
         placeholder="Search"
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
-          console.log(details);
+          console.log('Hello');
+          console.log(details.photos);
           setLatitude(details.geometry.location.lat);
           setLongitude(details.geometry.location.lng);
           setPlaceId(data.place_id);
@@ -180,8 +181,15 @@ const AddDestination = ({
             longitude: longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
-          }}
-        />
+          }}>
+          <Marker
+            coordinate={{
+              latitude: latitude,
+              longitude: longitude,
+            }}
+            title={name}
+          />
+        </MapView>
         {name && (
           <View style={addDestinationStyles.infoView}>
             <FlatList

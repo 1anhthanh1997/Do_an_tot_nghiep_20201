@@ -4,6 +4,7 @@ import {COLOR} from '../../../constants';
 const memberInfoStyles = StyleSheet.create({
   screenView: {
     flex: 1,
+    backgroundColor: COLOR.white,
   },
   personalItemView: {
     width: '100%',
@@ -25,6 +26,7 @@ const memberInfoStyles = StyleSheet.create({
   },
   flatList: {
     width: '100%',
+    flexGrow: 0,
     paddingTop: 30,
     backgroundColor: COLOR.white,
   },
@@ -80,6 +82,31 @@ const memberInfoStyles = StyleSheet.create({
   contentText: {
     fontSize: 16,
     marginTop: 10,
+  },
+  buttonView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: COLOR.white,
+    marginTop: 100,
+  },
+  buttonTouchable: {
+    width: '15%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR.green,
+    marginRight: 50,
+    borderRadius: 30,
+  },
+  secondButtonTouchable: {
+    width: '15%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR.orange,
+    borderRadius: 30,
+    marginLeft: 50,
   },
 });
 

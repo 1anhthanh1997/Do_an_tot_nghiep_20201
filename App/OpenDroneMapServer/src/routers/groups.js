@@ -13,5 +13,6 @@ router.patch('/editTrip/:id',auth,group_controller.editTrip)
 router.patch('/joinTrip/:groupId',auth,group_controller.joinTrip)
 router.post('/addDestination/:groupId',auth,group_controller.addDestination)
 router.patch('/editDestination/:groupId',auth,group_controller.editDestination)
+router.get('/memberList/:groupId',auth,group_controller.getMemberList)
 
 module.exports = router;
